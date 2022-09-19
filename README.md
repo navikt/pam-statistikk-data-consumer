@@ -1,0 +1,1 @@
+# pam-statistikk-data-consumer
