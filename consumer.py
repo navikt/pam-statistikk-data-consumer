@@ -1,16 +1,15 @@
 import threading
 
-from starlette.responses import JSONResponse
-from fastapi import FastAPI
-from starlette import status
+from api import API
 from kafka3 import KafkaConsumer
 from kafka3.errors import KafkaError, NoBrokersAvailable
 from logger import get_logger
 
 
-class ConsumerApp:
-    def __init__(self, topic: str, kafka_brokers: str, kafka_ca_path: str, kafka_group_id: str,
-                 kafka_schema_registry: str, client_id: str, ssl_certfile=None, ssl_keyfile=None):
+class Consumer:
+    def __init__(self, api: API, parser, topic: str, kafka_brokers: str, kafka_ca_path: str, kafka_group_id: str,
+                 kafka_schema_registry: str, client_id: str, ssl_certfile=None, ssl_keyfile=None,
+                 ):
         self._logger = get_logger(__name__)
         self._schema_cache = {}
         self._schema_registry = kafka_schema_registry
@@ -21,22 +20,15 @@ class ConsumerApp:
         self._kafka_ca_path = kafka_ca_path
         self._kafka_group_id = kafka_group_id
         self._client_id = client_id
-        self._app = FastAPI()
-        self._is_alive = True
-        self._is_ready = False
-        self.add_endpoints()
+        self.api = api
 
         self._logger.info("initiating consumer app")
         threading.Thread(target=self.read_topic, daemon=True).start()
 
-    @property
-    def app(self):
-        return self._app
-
     def read_topic(self):
         consumer = self.create_consumer()
 
-        self._is_ready = True
+        self.api.setReady(True)
         self._logger.info("Application is_ready OK")
 
         try:
@@ -46,34 +38,12 @@ class ConsumerApp:
 
                 # consumer.commit()
         except KafkaError:
-            self._is_alive = False
+            self.api.setAlive(False)
 
         self._logger.error("Kafka consumer stopped. Restarting app.")
-        self._is_alive = False
+        self.api.setAlive(False)
         raise KafkaError()
 
-    def healthiness(self):
-        if self._is_alive:
-            return JSONResponse(status_code=status.HTTP_200_OK, content={"Status": f"ok"})
-        else:
-            return JSONResponse(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                content={"Status": f"Unhealthy"},
-            )
-
-    def readiness(self):
-        if self._is_ready:
-            return JSONResponse(status_code=status.HTTP_200_OK, content={"Status": f"ok"})
-        else:
-            return JSONResponse(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                content={"Status": f"NotReady"},
-            )
-
-    def add_endpoints(self):
-
-        self._app.add_api_route(path="/isalive", endpoint=self.healthiness)
-        self._app.add_api_route(path="/isready", endpoint=self.readiness)
 
     def create_consumer(self) -> KafkaConsumer:
         try:
@@ -85,7 +55,7 @@ class ConsumerApp:
                                      ssl_keyfile=self.ssl_keyfile,
                                      auto_offset_reset="earliest",
                                      group_id=self._kafka_group_id,
-                                     enable_auto_commit=False,
+                                     enable_auto_commit=True,
                                      api_version_auto_timeout_ms=20000,
                                      client_id=self._client_id
                                      )
