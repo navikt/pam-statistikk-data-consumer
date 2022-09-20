@@ -1,15 +1,17 @@
 import threading
-import logging
+
 from starlette.responses import JSONResponse
 from fastapi import FastAPI
 from starlette import status
 from kafka3 import KafkaConsumer
 from kafka3.errors import KafkaError, NoBrokersAvailable
+from logger import get_logger
 
 
 class ConsumerApp:
     def __init__(self, topic: str, kafka_brokers: str, kafka_ca_path: str, kafka_group_id: str,
                  kafka_schema_registry: str, client_id: str, ssl_certfile=None, ssl_keyfile=None):
+        self._logger = get_logger(__name__)
         self._schema_cache = {}
         self._schema_registry = kafka_schema_registry
         self._topic = topic
@@ -23,10 +25,9 @@ class ConsumerApp:
         self._is_alive = True
         self._is_ready = False
         self.add_endpoints()
-        self._logger = logging.getLogger(__name__)
 
         self._logger.info("initiating consumer app")
-        threading.Thread(target=self.read_topic, daemon=True).start()
+        # threading.Thread(target=self.read_topic, daemon=True).start()
 
     @property
     def app(self):
@@ -36,7 +37,7 @@ class ConsumerApp:
         consumer = self.create_consumer()
 
         self._is_ready = True
-        self._logger.debug("Application is_ready OK")
+        self._logger.info("Application is_ready OK")
 
         try:
             for msg in consumer:
@@ -46,7 +47,7 @@ class ConsumerApp:
         except KafkaError:
             self._is_alive = False
 
-        self._logger.warning("Kafka consumer stopped. Restarting app.")
+        self._logger.error("Kafka consumer stopped. Restarting app.")
         self._is_alive = False
         raise KafkaError()
 
@@ -69,8 +70,9 @@ class ConsumerApp:
             )
 
     def add_endpoints(self):
-        self._app.add_api_route(path="/is-alive", endpoint=self.healthiness)
-        self._app.add_api_route(path="/is-ready", endpoint=self.readiness)
+
+        self._app.add_api_route(path="/isalive", endpoint=self.healthiness)
+        self._app.add_api_route(path="/isready", endpoint=self.readiness)
 
     def create_consumer(self) -> KafkaConsumer:
         try:
@@ -90,6 +92,9 @@ class ConsumerApp:
             self._logger.info(f"Kafka consumer started OK: {consumer}")
         except NoBrokersAvailable:
             self._logger.error("Kafka initialization error. Restarting app.")
+            self._is_alive = False
+        except Exception as e:
+            self._logger.error(e)
             self._is_alive = False
         else:
             return consumer
