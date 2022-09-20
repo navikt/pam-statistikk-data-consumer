@@ -27,7 +27,7 @@ class ConsumerApp:
         self.add_endpoints()
 
         self._logger.info("initiating consumer app")
-        # threading.Thread(target=self.read_topic, daemon=True).start()
+        threading.Thread(target=self.read_topic, daemon=True).start()
 
     @property
     def app(self):
@@ -40,6 +40,7 @@ class ConsumerApp:
         self._logger.info("Application is_ready OK")
 
         try:
+            self._logger.info("readying kafka messages...")
             for msg in consumer:
                 self._logger.info(msg)
 
