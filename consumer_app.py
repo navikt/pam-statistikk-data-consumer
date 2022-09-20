@@ -45,12 +45,12 @@ class ConsumerApp:
                 self._logger.info(msg)
 
                 # consumer.commit()
-        except KafkaError:
+        except KafkaError as e:
+            self._logger.error(f"Kafka-error - {e}")
             self._is_alive = False
 
         self._logger.error("Kafka consumer stopped. Restarting app.")
         self._is_alive = False
-        raise KafkaError()
 
     def healthiness(self):
         if self._is_alive:
