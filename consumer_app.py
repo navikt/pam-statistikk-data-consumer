@@ -3,8 +3,8 @@ import logging
 from starlette.responses import JSONResponse
 from fastapi import FastAPI
 from starlette import status
-from kafka import KafkaConsumer
-from kafka.errors import KafkaError, NoBrokersAvailable
+from kafka3 import KafkaConsumer
+from kafka3.errors import KafkaError, NoBrokersAvailable
 
 
 class ConsumerApp:
