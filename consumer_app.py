@@ -25,6 +25,7 @@ class ConsumerApp:
         self.add_endpoints()
         self._logger = logging.getLogger(__name__)
 
+        self._logger.info("initiating consumer app")
         threading.Thread(target=self.read_topic, daemon=True).start()
 
     @property

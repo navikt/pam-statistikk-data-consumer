@@ -19,7 +19,7 @@ try:
         kafka_group_id="statistikk-data-consumer-v1",
         kafka_schema_registry=os.environ['KAFKA_SCHEMA_REGISTRY'],
         client_id="pam-markedsinnsikt-datastory-consumer-" + str(uuid.uuid4().int)
-    )
+    ).app
 
 except Exception as e:
     print(f"Application error: {e}")
