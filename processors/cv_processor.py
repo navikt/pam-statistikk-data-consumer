@@ -27,7 +27,7 @@ from pprint import pprint
 from datetime import datetime
 
 from kafka3.consumer.fetcher import ConsumerRecord
-from processor import Processor
+from processors.processor import Processor
 from logger import get_logger
 logger = get_logger(__name__)
 
