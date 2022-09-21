@@ -5,19 +5,19 @@ from starlette import status
 
 class API:
     def __init__(self):
-        self._app = FastAPI()
         self._is_alive = True
         self._is_ready = False
+        self._app = FastAPI()
         self.add_endpoints()
 
     @property
     def app(self):
         return self._app
 
-    def setReady(self, arg: bool):
+    def set_ready(self, arg: bool):
         self._is_ready = arg
 
-    def setAlive(self, arg: bool):
+    def set_alive(self, arg: bool):
         self._is_ready = arg
 
     def healthiness(self):
@@ -39,7 +39,5 @@ class API:
             )
 
     def add_endpoints(self):
-
         self._app.add_api_route(path="/isalive", endpoint=self.healthiness)
         self._app.add_api_route(path="/isready", endpoint=self.readiness)
-
