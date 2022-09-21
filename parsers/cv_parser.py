@@ -26,6 +26,8 @@ import json
 from pprint import pprint
 from datetime import datetime
 
+from logger import get_logger
+logger = get_logger(__name__)
 
 def cv_kafka_to_database_mapper(kafka_msg):
     def cv(param):
@@ -35,7 +37,7 @@ def cv_kafka_to_database_mapper(kafka_msg):
         return kafka_msg["jobWishes"][param] if "jobWishes" in kafka_msg.keys() and kafka_msg["jobWishes"] is not None else None
 
     # kafka_msg = json.load(kafka_msg)
-
+    logger.info(kafka_msg)
     return {
         "aktorId": kafka_msg["aktorId"],
         "fødselsdato": kafka_msg["personalia"]["foedselsdato"] if "personalia" in kafka_msg.keys() else None,
