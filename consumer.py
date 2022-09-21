@@ -47,17 +47,15 @@ class Consumer:
     def read_topic(self):
         consumer = self.create_consumer()
         self._logger.info("Application is_ready OK")
-        debug_msg = None
         try:
             self._logger.info("readying kafka messages...")
             for msg in consumer:
-                debug_msg = msg
+                self._logger.info(msg)
                 parsed_msg = self.parser(msg.value)
                 self._logger.info(parsed_msg)
                 consumer.commit()
 
         except KafkaError as e:
-            self._logger.info(debug_msg)
             self._logger.error(f"Kafka-error - {e}")
             self.api.set_alive(False)
 
