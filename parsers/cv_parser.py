@@ -43,8 +43,8 @@ def cv_kafka_to_database_mapper(kafka_msg):
         "fødselsdato": kafka_msg["personalia"]["foedselsdato"] if "personalia" in kafka_msg.keys() else None,
         "postnummer": kafka_msg["personalia"]["postnummer"] if "personalia" in kafka_msg.keys() else None,
         "kommunenr": kafka_msg["personalia"]["kommunenr"] if "personalia" in kafka_msg.keys() else None,
-        "synligForArbeidsgiver": kafka_msg["synligForArbeidsgiver"],
-        "synligForVeileder": kafka_msg["synligForVeileder"],
+        "synligForArbeidsgiver": cv("synligForArbeidsgiver"),
+        "synligForVeileder": cv("synligForVeileder"),
         "hasCar": cv("hasCar"),
         "oppfolgingsinformasjon": {
             "fritattKandidatsok": kafka_msg["oppfolgingsinformasjon"]["fritattKandidatsok"],
