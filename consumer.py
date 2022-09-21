@@ -2,14 +2,16 @@ import threading
 import os
 import uuid
 import json
+import traceback
 
+from processors.processor import Processor
 from api import API
 from kafka3 import KafkaConsumer
 from kafka3.errors import KafkaError, NoBrokersAvailable
 from logger import get_logger
 
 
-def create_consumer(topic: str, kafka_group_id: str, parser: (), api: API):
+def create_consumer(topic: str, kafka_group_id: str, processor: Processor, api: API):
     return Consumer(
         topic=topic,
         kafka_brokers=os.environ["KAFKA_BROKERS"],
@@ -20,12 +22,12 @@ def create_consumer(topic: str, kafka_group_id: str, parser: (), api: API):
         kafka_schema_registry=os.environ['KAFKA_SCHEMA_REGISTRY'],
         client_id=kafka_group_id + str(uuid.uuid4().int),
         api=api,
-        parser=parser
+        processor=processor
     )
 
 
 class Consumer:
-    def __init__(self, api: API, parser: (), topic: str, kafka_brokers: str, kafka_ca_path: str, kafka_group_id: str,
+    def __init__(self, api: API, processor: Processor, topic: str, kafka_brokers: str, kafka_ca_path: str, kafka_group_id: str,
                  kafka_schema_registry: str, client_id: str, ssl_certfile=None, ssl_keyfile=None,
                  ):
         self._logger = get_logger(__name__)
@@ -39,7 +41,7 @@ class Consumer:
         self._kafka_group_id = kafka_group_id
         self._client_id = client_id
         self.api = api
-        self.parser = parser
+        self.processor = processor
 
         self._logger.info("initiating consumer app")
         threading.Thread(target=self.read_topic, daemon=True).start()
@@ -50,16 +52,14 @@ class Consumer:
         try:
             self._logger.info("readying kafka messages...")
             for msg in consumer:
-                parsed_msg = self.parser(msg.value)
-                self._logger.info(parsed_msg)
+                self.processor.process(msg)
                 consumer.commit()
 
         except KafkaError as e:
-            self._logger.error(f"Kafka-error - {e}")
+            self._logger.error(f"Kafka-error - {e} - {traceback.format_exc()}")
             self.api.set_alive(False)
-
         except Exception as e:
-            self._logger.error(f"ERROR - {e}")
+            self._logger.error(f"ERROR - {e} - {traceback.format_exc()}")
             self.api.set_alive(False)
 
         self._logger.error("Kafka consumer stopped. Restarting app.")

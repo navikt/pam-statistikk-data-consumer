@@ -4,7 +4,7 @@ from api import API
 from consumer import create_consumer
 from logger import init_app_logging, get_logger
 
-from parsers.cv_parser import cv_kafka_to_database_mapper
+from processors.cv_processor import CvProcessor
 
 init_app_logging()
 logger = get_logger(__name__)
@@ -17,7 +17,7 @@ consumers = [  # Legg til nye topics her
     {
         "topic": "teampam.cv-endret-intern-v3",
         "group_id": "statistikk-data-consumer-v2",
-        "parser": cv_kafka_to_database_mapper
+        "processor": CvProcessor()
     },
 ]
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
             create_consumer(
                 topic=info["topic"],
                 kafka_group_id=info["group_id"],
-                parser=info["parser"],
+                processor=info["processor"],
                 api=api
             )
         api.set_ready(True)
