@@ -51,9 +51,7 @@ class Consumer:
         try:
             self._logger.info("readying kafka messages...")
             for msg in consumer:
-                self._logger.info(msg)
-                self._logger.info(type(msg))
-                parsed_msg = self.parser(msg)
+                parsed_msg = self.parser(msg.value)
                 self._logger.info(parsed_msg)
                 consumer.commit()
 
