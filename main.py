@@ -23,10 +23,6 @@ consumers = [  # Legg til nye topics her
 
 
 if __name__ == "__main__":
-    logger.info("running uvicorn")
-    uvicorn.run("main:app", host='0.0.0.0', port=8080, reload=True, debug=True, workers=3)
-    logger.info("uvicorn is running")
-
     try:
         for info in consumers:
             create_consumer(
@@ -42,3 +38,6 @@ if __name__ == "__main__":
         logger.error("Application ended")
         logger.error(e)
         api.set_alive(False)
+
+    logger.info("running uvicorn")
+    uvicorn.run("main:app", host='0.0.0.0', port=8080, reload=True, debug=True, workers=3)

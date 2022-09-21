@@ -54,6 +54,7 @@ class Consumer:
                 parsed_msg = self.parser(msg)
                 self._logger.info(parsed_msg)
                 consumer.commit()
+
         except KafkaError as e:
             self._logger.error(f"Kafka-error - {e}")
             self.api.set_alive(False)
