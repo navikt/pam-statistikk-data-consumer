@@ -59,9 +59,12 @@ class Consumer:
             self._logger.error(f"Kafka-error - {e}")
             self.api.set_alive(False)
 
+        except Exception as e:
+            self._logger.error(f"ERROR - {e}")
+            self.api.set_alive(False)
+
         self._logger.error("Kafka consumer stopped. Restarting app.")
         self.api.set_alive(False)
-        raise KafkaError()
 
     def create_consumer(self) -> KafkaConsumer:
         try:
