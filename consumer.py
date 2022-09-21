@@ -71,7 +71,7 @@ class Consumer:
                                      ssl_cafile=self._kafka_ca_path,
                                      ssl_certfile=self.ssl_certfile,
                                      ssl_keyfile=self.ssl_keyfile,
-                                     value_deserializer=lambda x: json.loads(x.encode('ascii').decode('utf-8')),
+                                     value_deserializer=lambda x: json.loads(x.decode('utf-8')),
                                      auto_offset_reset="earliest",
                                      group_id=self._kafka_group_id,
                                      enable_auto_commit=False,
