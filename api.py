@@ -22,10 +22,12 @@ class API:
     def set_ready(self, arg: bool):
         logger.info(f"API ready endpoint set to {arg}")
         self._is_ready = arg
+        self.add_endpoints(self)
 
     def set_alive(self, arg: bool):
         logger.info(f"API alive endpoint set to {arg}")
         self._is_ready = arg
+        self.add_endpoints(self)
 
     def healthiness(self):
         if self._is_alive:
