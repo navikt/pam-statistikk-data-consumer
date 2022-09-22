@@ -11,13 +11,15 @@ logger = get_logger(__name__)
 
 
 def run_database_migrations():
+    logger.info("Running migrations")
     db_url = os.getenv("DB_URL")
-
     backend = get_backend(db_url)
     migrations = read_migrations("./migrations")
+    logger.info(f"Reading migrations: {migrations}")
 
     with backend.lock():
         backend.apply_migrations(backend.to_apply(migrations))
+        logger.info("Migrations applied")
 
 
 class DatabaseEngine:

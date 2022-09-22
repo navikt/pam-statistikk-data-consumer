@@ -4,7 +4,7 @@ from api import API
 from consumer import create_consumer
 
 from logger import init_app_logging, get_logger
-from db.database import run_database_migrations
+from db.database import run_database_migrations, Database
 from processors.cv_processor import CvProcessor
 
 init_app_logging()
@@ -26,6 +26,7 @@ consumers = [  # Legg til nye topics her
 def main():
     try:
         run_database_migrations()
+        db = Database()
     except Exception as e:
         logger.error(f'Error while migrating database - {e}. Shutting down')
         return
