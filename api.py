@@ -13,7 +13,6 @@ class API:
         self._is_alive = False
         self._is_ready = False
         self._app = FastAPI()
-        self.add_endpoints()
 
     @property
     def app(self):
