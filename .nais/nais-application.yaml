@@ -30,3 +30,11 @@ spec:
       memory: "256Mi"
   kafka:
     pool: "nav-dev"
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        databases:
+          - name: pam-statistikk-db
+            envVarPrefix: DB
+            users:
+              - name: statistikk-read-user

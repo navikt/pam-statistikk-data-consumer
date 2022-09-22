@@ -2,8 +2,9 @@ import uvicorn
 
 from api import API
 from consumer import create_consumer
-from logger import init_app_logging, get_logger
 
+from logger import init_app_logging, get_logger
+from db.database import run_database_migrations
 from processors.cv_processor import CvProcessor
 
 init_app_logging()
@@ -23,6 +24,7 @@ consumers = [  # Legg til nye topics her
 
 
 if __name__ == "__main__":
+    run_database_migrations()
     try:
         for info in consumers:
             create_consumer(
