@@ -13,14 +13,11 @@ logger = get_logger(__name__)
 def run_database_migrations():
     db_url = os.getenv("DB_URL")
 
-    try:
-        backend = get_backend(db_url)
-        migrations = read_migrations("./migrations")
+    backend = get_backend(db_url)
+    migrations = read_migrations("./migrations")
 
-        with backend.lock():
-            backend.apply_migrations(backend.to_apply(migrations))
-    except Exception as e:
-        logger.error(f'Error while migrating database - {e}')
+    with backend.lock():
+        backend.apply_migrations(backend.to_apply(migrations))
 
 
 class DatabaseEngine:

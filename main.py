@@ -23,8 +23,13 @@ consumers = [  # Legg til nye topics her
 ]
 
 
-if __name__ == "__main__":
-    run_database_migrations()
+def main():
+    try:
+        run_database_migrations()
+    except Exception as e:
+        logger.error(f'Error while migrating database - {e}. Shutting down')
+        return
+
     try:
         for info in consumers:
             create_consumer(
@@ -43,3 +48,7 @@ if __name__ == "__main__":
 
     logger.info("running uvicorn")
     uvicorn.run("main:app", host='0.0.0.0', port=8080, reload=True, debug=True, workers=3)
+
+
+if __name__ == "__main__":
+    main()
