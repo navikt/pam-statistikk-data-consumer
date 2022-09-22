@@ -42,8 +42,8 @@ class CvProcessor(Processor):
 
         self.insert_to_db(parsed_msg)
 
-    def insert_to_db(self, msg: str):
-        pass
+    def insert_to_db(self, msg: dict):
+        logger.info(self.db)
 
     def parse(self, kafka_msg):
         def cv(param):

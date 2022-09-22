@@ -37,7 +37,8 @@ def main():
                 topic=info["topic"],
                 kafka_group_id=info["group_id"],
                 processor=info["processor"],
-                api=api
+                api=api,
+                db=db
             )
         api.set_ready(True)
 

@@ -9,9 +9,10 @@ from api import API
 from kafka3 import KafkaConsumer
 from kafka3.errors import KafkaError, NoBrokersAvailable
 from logger import get_logger
+from db.database import Database
 
 
-def create_consumer(topic: str, kafka_group_id: str, processor: Processor, api: API):
+def create_consumer(topic: str, kafka_group_id: str, processor: Processor, api: API, db: Database):
     return Consumer(
         topic=topic,
         kafka_brokers=os.environ["KAFKA_BROKERS"],
@@ -22,13 +23,15 @@ def create_consumer(topic: str, kafka_group_id: str, processor: Processor, api: 
         kafka_schema_registry=os.environ['KAFKA_SCHEMA_REGISTRY'],
         client_id=kafka_group_id + str(uuid.uuid4().int),
         api=api,
-        processor=processor
+        processor=processor,
+        db=db
     )
 
 
 class Consumer:
-    def __init__(self, api: API, processor: Processor, topic: str, kafka_brokers: str, kafka_ca_path: str, kafka_group_id: str,
-                 kafka_schema_registry: str, client_id: str, ssl_certfile=None, ssl_keyfile=None,
+    def __init__(self, topic: str, kafka_brokers: str, kafka_ca_path: str, kafka_group_id: str,
+                 kafka_schema_registry: str, client_id: str, api: API, processor: Processor,
+                 db: Database, ssl_certfile=None, ssl_keyfile=None,
                  ):
         self._logger = get_logger(__name__)
         self._schema_cache = {}
@@ -42,6 +45,9 @@ class Consumer:
         self._client_id = client_id
         self.api = api
         self.processor = processor
+        self.db = db
+
+        self.processor.set_db_instance(db)
 
         self._logger.info("initiating consumer app")
         threading.Thread(target=self.read_topic, daemon=True).start()
@@ -50,6 +56,7 @@ class Consumer:
         consumer = self.create_consumer()
         self._logger.info("Application is_ready OK")
         try:
+            self._logger.info(self.processor.db)
             self._logger.info("reading kafka messages...")
             for msg in consumer:
                 self.processor.process(msg)

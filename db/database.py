@@ -58,7 +58,7 @@ class Database:
         query = f"select * from {table}"
         return self.execute_query(query)
 
-    def upsert_cv(self, data: dict, table: str = "ettersporsel_i_arbeidsmarkedet", primary_key: str = "aktorid"):
+    def upsert(self, data: dict, table: str, primary_key: str):
         columns = [column.lower() for column in data.keys()]
         values = [data[column] for column in columns]
         update_set_query_substrings = [f"{col} = EXCLUDED.{col}" for col in columns if col != primary_key]
@@ -70,7 +70,7 @@ class Database:
         try:
             self.execute_query(query, tuple(values))
         except Exception as e:
-            logger.error(f"Error when upserting CV - aktorId: {data['aktorid']} - Error: {e}")
+            logger.error(f"Error when upserting {table} - : {data[primary_key]} - Error: {e}")
             raise e
 
     def delete_cv(self, aktor_id: str, table: str = "ettersporsel_i_arbeidsmarkedet"):
