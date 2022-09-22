@@ -57,7 +57,7 @@ class CvProcessor(Processor):
 
         return {
             "aktorId": kafka_msg["aktorId"],
-            "fødselsdato": kafka_msg["personalia"]["foedselsdato"] if "personalia" in kafka_msg.keys() else None,
+            "foedselsdato": kafka_msg["personalia"]["foedselsdato"] if "personalia" in kafka_msg.keys() else None,
             "postnummer": kafka_msg["personalia"]["postnummer"] if "personalia" in kafka_msg.keys() else None,
             "kommunenr": kafka_msg["personalia"]["kommunenr"] if "personalia" in kafka_msg.keys() else None,
             "synligForArbeidsgiver": cv("synligForArbeidsgiver"),
