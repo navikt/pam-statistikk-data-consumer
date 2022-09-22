@@ -34,13 +34,12 @@ logger = get_logger(__name__)
 
 class CvProcessor(Processor):
     def process(self, msg: ConsumerRecord):
-        # if slett melding
         if msg.value["meldingstype"] == "SLETT":
             return None
 
         parsed_msg = self.parse(msg.value)
         logger.info(parsed_msg)
-        # send to db
+
         self.insert_to_db(parsed_msg)
 
     def insert_to_db(self, msg: str):

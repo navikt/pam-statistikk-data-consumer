@@ -50,7 +50,7 @@ class Consumer:
         consumer = self.create_consumer()
         self._logger.info("Application is_ready OK")
         try:
-            self._logger.info("readying kafka messages...")
+            self._logger.info("reading kafka messages...")
             for msg in consumer:
                 self.processor.process(msg)
                 consumer.commit()
