@@ -2,6 +2,11 @@ from starlette.responses import JSONResponse
 from fastapi import FastAPI
 from starlette import status
 
+from logger import init_app_logging, get_logger
+
+init_app_logging()
+logger = get_logger(__name__)
+
 
 class API:
     def __init__(self):
@@ -15,9 +20,11 @@ class API:
         return self._app
 
     def set_ready(self, arg: bool):
+        logger.info(f"API ready endpoint set to {arg}")
         self._is_ready = arg
 
     def set_alive(self, arg: bool):
+        logger.info(f"API alive endpoint set to {arg}")
         self._is_ready = arg
 
     def healthiness(self):
