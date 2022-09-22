@@ -30,7 +30,7 @@ def main():
     except Exception as e:
         logger.error(f'Error while migrating database - {e}. Shutting down')
         return
-
+    api.set_alive(True)
     try:
         for info in consumers:
             create_consumer(

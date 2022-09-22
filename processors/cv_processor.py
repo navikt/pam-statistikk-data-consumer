@@ -44,9 +44,7 @@ class CvProcessor(Processor):
             return None
 
         parsed_msg = self.parse(msg.value)
-        logger.info(parsed_msg)
-
-        self.insert_to_db(parsed_msg)
+        # self.insert_to_db(parsed_msg)
 
     def insert_to_db(self, msg: dict):
         logger.info(f"upserting {msg['aktorId']}")
@@ -58,9 +56,6 @@ class CvProcessor(Processor):
 
         def job_wishes(param):
             return kafka_msg["jobWishes"][param] if "jobWishes" in kafka_msg.keys() and kafka_msg["jobWishes"] is not None else None
-
-        # kafka_msg = json.load(kafka_msg)
-        logger.info(kafka_msg)
 
         return {
             "aktorId": kafka_msg["aktorId"],

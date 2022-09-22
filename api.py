@@ -10,7 +10,7 @@ logger = get_logger(__name__)
 
 class API:
     def __init__(self):
-        self._is_alive = True
+        self._is_alive = False
         self._is_ready = False
         self._app = FastAPI()
         self.add_endpoints()
