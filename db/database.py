@@ -14,7 +14,7 @@ def run_database_migrations():
     logger.info("Running migrations")
     db_url = os.getenv("DB_URL")
     backend = get_backend(db_url)
-    migrations = read_migrations("./migrations")
+    migrations = read_migrations("./db/migrations")
     logger.info(f"Reading migrations: {migrations}")
 
     with backend.lock():
