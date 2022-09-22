@@ -37,7 +37,7 @@ class CvProcessor(Processor):
         super().__init__()
 
         self._table = "cv"
-        self._primary_key = "aktorId"
+        self._primary_key = "aktorid"
 
     def process(self, msg: ConsumerRecord):
         if msg.value["meldingstype"] == "SLETT":
