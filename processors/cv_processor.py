@@ -33,6 +33,12 @@ logger = get_logger(__name__)
 
 
 class CvProcessor(Processor):
+    def __init__(self):
+        super().__init__()
+
+        self._table = "cv"
+        self._primary_key = "aktorId"
+
     def process(self, msg: ConsumerRecord):
         if msg.value["meldingstype"] == "SLETT":
             return None
@@ -43,7 +49,8 @@ class CvProcessor(Processor):
         self.insert_to_db(parsed_msg)
 
     def insert_to_db(self, msg: dict):
-        logger.info(self.db)
+        logger.info(f"upserting {msg['aktorId']}")
+        self.db.upsert(data=msg, table=self._table, primary_key=self._primary_key)
 
     def parse(self, kafka_msg):
         def cv(param):
