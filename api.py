@@ -13,6 +13,7 @@ class API:
         self._is_alive = True
         self._is_ready = False
         self._app = FastAPI()
+        self.add_endpoints()
 
     @property
     def app(self):
@@ -21,12 +22,10 @@ class API:
     def set_ready(self, arg: bool):
         logger.info(f"API ready endpoint set to {arg}")
         self._is_ready = arg
-        self.add_endpoints()
 
     def set_alive(self, arg: bool):
         logger.info(f"API alive endpoint set to {arg}")
         self._is_ready = arg
-        self.add_endpoints()
 
     def healthiness(self):
         if self._is_alive:
