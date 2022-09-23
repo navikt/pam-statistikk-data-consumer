@@ -6,18 +6,12 @@ import pg8000
 import sqlalchemy
 
 
-# connect_with_connector initializes a connection pool for a
-# Cloud SQL instance of Postgres using the Cloud SQL Python Connector.
 def connect_with_connector() -> sqlalchemy.engine.base.Engine:
-    # Note: Saving credentials in environment variables is convenient, but not
-    # secure - consider a more secure solution such as
-    # Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
-    # keep secrets safe.
 
     instance_connection_name = os.environ["INSTANCE_CONNECTION_NAME"]  # e.g. 'project:region:instance'
     db_user = os.environ["DB_USER"]  # e.g. 'my-db-user'
     db_pass = os.environ["DB_PASS"]  # e.g. 'my-db-password'
-    db_name = os.environ["DB_NAME"]  # e.g. 'my-database'
+    db_name = os.environ["DB_DATABASE"]  # e.g. 'my-database'
 
     ip_type = IPTypes.PRIVATE if os.environ.get("PRIVATE_IP") else IPTypes.PUBLIC
 
@@ -26,7 +20,7 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
 
     def getconn() -> pg8000.dbapi.Connection:
         conn: pg8000.dbapi.Connection = connector.connect(
-            instance_connection_name,
+            f"{os.environ['GCP_PROJECT']}:europe-north1:{db_name}",
             "pg8000",
             user=db_user,
             password=db_pass,
@@ -46,5 +40,4 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
 
 
 if __name__ == "__main__":
-    for key, value in os.environ.items():
-        print(f"{key} - {value}")
+    connection = connect_with_connector()

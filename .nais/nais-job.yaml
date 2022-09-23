@@ -7,6 +7,8 @@ metadata:
     "team": teampam
 spec:
   image: {{image}}
+  envFrom:
+    - secret: pam-statistikk-job
   resources:
     limits:
       cpu: "200m"
