@@ -44,7 +44,7 @@ class CvProcessor(Processor):
             return None
 
         parsed_msg = self.parse(msg.value)
-        # self.insert_to_db(parsed_msg)
+        self.insert_to_db(parsed_msg)
 
     def insert_to_db(self, msg: dict):
         logger.info(f"upserting {msg['aktorId']}")
