@@ -1,6 +1,6 @@
 import json
 import os
-from logger import init_app_logging, get_logger
+from app.logger import init_app_logging, get_logger
 
 import pandas.io.sql as psql
 from sqlalchemy import create_engine

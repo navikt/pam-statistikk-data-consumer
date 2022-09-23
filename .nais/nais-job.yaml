@@ -1,0 +1,22 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Naisjob"
+metadata:
+  name: pam-statistikk-nais-job
+  namespace: teampam
+  labels:
+    "team": teampam
+spec:
+  image: {{image}}
+  resources:
+    limits:
+      cpu: "200m"
+      memory: "256Mi"
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+  gcp:
+    permissions:
+    - resource:
+        apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+        kind: Project
+      role: roles/cloudsql.client

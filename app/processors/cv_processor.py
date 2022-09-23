@@ -22,13 +22,9 @@
 # last opp fil til gcp
     # Gjenbruke oppsettet til database bare med buckets?
 
-import json
-from pprint import pprint
-from datetime import datetime
-
 from kafka3.consumer.fetcher import ConsumerRecord
-from processors.processor import Processor
-from logger import get_logger
+from app.processors.processor import Processor
+from app.logger import get_logger
 logger = get_logger(__name__)
 
 
