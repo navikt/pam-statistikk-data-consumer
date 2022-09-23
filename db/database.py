@@ -60,7 +60,7 @@ class Database:
 
     def upsert(self, data: dict, table: str, primary_key: str):
         columns = [column.lower() for column in data.keys()]
-        values = [data[column] for column in columns]
+        values = [data[column] for column in data.keys()]
         update_set_query_substrings = [f"{col} = EXCLUDED.{col}" for col in columns if col != primary_key]
         placeholders = ["%s" for _ in values]
 
