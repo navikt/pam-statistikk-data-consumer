@@ -1,3 +1,4 @@
+import json
 import os
 from logger import init_app_logging, get_logger
 
@@ -60,18 +61,21 @@ class Database:
 
     def upsert(self, data: dict, table: str, primary_key: str):
         columns = [column.lower() for column in data.keys()]
-        values = [data[column] for column in data.keys()]
+        formatted_values = self.get_formatted_values(data)
         update_set_query_substrings = [f"{col} = EXCLUDED.{col}" for col in columns if col != primary_key]
-        placeholders = ["%s" for _ in values]
+        placeholders = ["%s" for _ in formatted_values]
 
         query = f"INSERT INTO {table}({','.join(columns)}) VALUES ({','.join(placeholders)}) " \
                 f"ON CONFLICT ({primary_key}) DO UPDATE SET {','.join(update_set_query_substrings)}"
 
         try:
-            self.execute_query(query, tuple(values))
+            self.execute_query(query, tuple(formatted_values))
         except Exception as e:
             logger.error(f"Error when upserting {table} - : {data[primary_key]} - Error: {e}")
             raise e
+
+    def get_formatted_values(self, data):
+        return [json.dumps(data[column]) if type(data[column]) else data[column] for column in data.keys()]
 
     def delete_cv(self, aktor_id: str, table: str = "ettersporsel_i_arbeidsmarkedet"):
         query = f"DELETE FROM {table} WHERE aktorid='{aktor_id}'"
