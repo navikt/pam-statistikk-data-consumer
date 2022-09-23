@@ -27,7 +27,7 @@ jobs:
         "username": "${{ github.actor }}"
         "password": "${{ secrets.GITHUB_TOKEN }}"
     - name: "Build and push the Docker image"
-      run: "docker build -f ./app/Dockerfile --pull --tag ${CONSUMER_IMAGE} && docker push ${CONSUMER_IMAGE}"
+      run: "docker build . -f app/Dockerfile --pull --tag ${CONSUMER_IMAGE} && docker push ${CONSUMER_IMAGE}"
   "deployAppToDev":
     name: "Deploy consumer-application to dev"
     needs: "build"
