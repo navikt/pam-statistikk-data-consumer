@@ -11,7 +11,7 @@ logger = get_logger(__name__)
 
 
 def connect_with_connector() -> sqlalchemy.engine.base.Engine:
-    project_id = os.environ['GCP_PROJECT']
+    project_id = "teampam-dev-429f"
     db_user = os.environ["DB_USER"]
     db_pass = os.environ["DB_PASS"]
     db_name = os.environ["DB_NAME"]
