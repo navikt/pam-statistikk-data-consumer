@@ -1,8 +1,11 @@
+import asyncio
 import os
 
+import pandas as pd
 from google.cloud.sql.connector import Connector, IPTypes
 import pg8000
 import sqlalchemy
+from sqlalchemy.engine import Engine
 
 from logger import init_app_logging, get_logger
 
@@ -11,7 +14,7 @@ logger = get_logger(__name__)
 
 
 def connect_with_connector() -> sqlalchemy.engine.base.Engine:
-    project_id = "teampam-dev-429f"
+    db_instance = os.environ["DB_INSTANCE"]
     db_user = os.environ["DB_USER"]
     db_pass = os.environ["DB_PASS"]
     db_name = os.environ["DB_NAME"]
@@ -23,7 +26,7 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
 
     def getconn() -> pg8000.dbapi.Connection:
         conn: pg8000.dbapi.Connection = connector.connect(
-            f"{project_id}:europe-north1:{db_name}",
+            db_instance,
             "pg8000",
             user=db_user,
             password=db_pass,
@@ -37,11 +40,22 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     pool = sqlalchemy.create_engine(
         "postgresql+pg8000://",
         creator=getconn,
-        # ...
     )
     return pool
 
 
+async def read_from_db(con: Engine):
+    query = "SELECT * FROM cv"
+    query_result = await pd.read_sql(query, con)
+    print(query_result)
+
+
+async def main():
+    connection = connect_with_connector()
+    await read_from_db(connection)
+
+
 if __name__ == "__main__":
     logger.info("Starter naisjob")
-    connection = connect_with_connector()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
