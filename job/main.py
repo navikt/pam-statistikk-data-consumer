@@ -2,15 +2,19 @@ import os
 
 from google.cloud.sql.connector import Connector, IPTypes
 import pg8000
-
 import sqlalchemy
+
+from logger import init_app_logging, get_logger
+
+init_app_logging()
+logger = get_logger(__name__)
 
 
 def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     project_id = os.environ['GCP_PROJECT']
     db_user = os.environ["DB_USER"]
     db_pass = os.environ["DB_PASS"]
-    db_name = os.environ["DB_DATABASE"]
+    db_name = os.environ["DB_NAME"]
 
     ip_type = IPTypes.PRIVATE if os.environ.get("PRIVATE_IP") else IPTypes.PUBLIC
 
@@ -39,4 +43,5 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
 
 
 if __name__ == "__main__":
+    logger.info("Starter naisjob")
     connection = connect_with_connector()

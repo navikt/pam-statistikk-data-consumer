@@ -3,6 +3,8 @@ on:
   push:
     branches:
     - "main"
+    paths:
+      - 'job/**'
 
 env:
   "JOB_IMAGE": "ghcr.io/${{ github.repository }}-job:${{ github.sha }}"
