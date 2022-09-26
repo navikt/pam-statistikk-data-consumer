@@ -1,5 +1,5 @@
 from kafka3.consumer.fetcher import ConsumerRecord
-from ..db.database import Database
+from db.database import Database
 
 
 class Processor:

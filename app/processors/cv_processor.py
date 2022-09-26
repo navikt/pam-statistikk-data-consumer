@@ -23,8 +23,8 @@
     # Gjenbruke oppsettet til database bare med buckets?
 
 from kafka3.consumer.fetcher import ConsumerRecord
-from ..processors.processor import Processor
-from ..logger import get_logger
+from processors.processor import Processor
+from logger import get_logger
 logger = get_logger(__name__)
 
 
