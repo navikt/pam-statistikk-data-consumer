@@ -7,11 +7,10 @@ import sqlalchemy
 
 
 def connect_with_connector() -> sqlalchemy.engine.base.Engine:
-
-    instance_connection_name = os.environ["INSTANCE_CONNECTION_NAME"]  # e.g. 'project:region:instance'
-    db_user = os.environ["DB_USER"]  # e.g. 'my-db-user'
-    db_pass = os.environ["DB_PASS"]  # e.g. 'my-db-password'
-    db_name = os.environ["DB_DATABASE"]  # e.g. 'my-database'
+    project_id = os.environ['GCP_PROJECT']
+    db_user = os.environ["DB_USER"]
+    db_pass = os.environ["DB_PASS"]
+    db_name = os.environ["DB_DATABASE"]
 
     ip_type = IPTypes.PRIVATE if os.environ.get("PRIVATE_IP") else IPTypes.PUBLIC
 
@@ -20,7 +19,7 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
 
     def getconn() -> pg8000.dbapi.Connection:
         conn: pg8000.dbapi.Connection = connector.connect(
-            f"{os.environ['GCP_PROJECT']}:europe-north1:{db_name}",
+            f"{project_id}:europe-north1:{db_name}",
             "pg8000",
             user=db_user,
             password=db_pass,
