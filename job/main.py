@@ -44,18 +44,19 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     return pool
 
 
-async def read_from_db(con: Engine):
+def read_from_db(con: Engine):
     query = "SELECT * FROM cv"
-    query_result = await pd.read_sql(query, con)
-    print(query_result)
+    query_result = pd.read_sql(query, con)
+    logger.info(query_result)
+    logger.info(query_result.to_csv(index=False))
+    print(query_result.to_csv(index=False))
 
 
-async def main():
+def main():
     connection = connect_with_connector()
-    await read_from_db(connection)
+    read_from_db(connection)
 
 
 if __name__ == "__main__":
     logger.info("Starter naisjob")
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    main()
