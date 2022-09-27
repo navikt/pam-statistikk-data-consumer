@@ -56,7 +56,12 @@ import ast
 
 def write_to_files(df):
     for (columnName, columnData) in df.items():
-        data = columnData.iloc[0]
+        index = 0
+        data = None
+        while data == None or index == columnData.size - 1:
+            columnData.iloc[index]
+            index += 1
+
         print(f"{columnName}: type {type(data)}")
 
     # for all columns, if list, write to file end pop from df
