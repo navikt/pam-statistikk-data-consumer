@@ -57,6 +57,7 @@ import ast
 def write_to_files(df):
     for (columnName, columnData) in df.items():
         try:
+            print({"data": columnData, "values": columnData.values})
             k = ast.literal_eval(columnData)
             print({"name": columnName, "type": type(k)})
         except:
