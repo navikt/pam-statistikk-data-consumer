@@ -14,7 +14,7 @@ api = API()
 consumers = [  # Legg til nye topics her
     {
         "topic": "teampam.cv-endret-intern-v3",
-        "group_id": "statistikk-data-consumer-v2",
+        "group_id": "statistikk-data-consumer-v3",
         "processor": CvProcessor()
     },
 ]
