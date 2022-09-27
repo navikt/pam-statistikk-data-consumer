@@ -11,8 +11,8 @@ spec:
     - secret: pam-statistikk-job
   resources:
     limits:
-      cpu: 2000m
-      memory: 12Gi
+      cpu: "200m"
+      memory: "256Mi"
   gcp:
     permissions:
     - resource:
