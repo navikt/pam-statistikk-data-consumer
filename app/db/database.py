@@ -77,12 +77,7 @@ class Database:
             raise e
 
     def get_formatted_values(self, data):
-        return [
-            json.dumps(data[column]) if type(data[column]) is dict
-            else data[column] if data[column] is not None
-            else null()
-            for column in data.keys()
-        ]
+        return [json.dumps(data[column]) if type(data[column]) is dict else data[column] for column in data.keys()]
 
     def delete_cv(self, aktor_id: str, table: str = "ettersporsel_i_arbeidsmarkedet"):
         query = f"DELETE FROM {table} WHERE aktorid='{aktor_id}'"
