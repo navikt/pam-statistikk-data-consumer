@@ -52,9 +52,15 @@ def read_from_db(con: Engine):
     # logger.info(query_result.to_csv(index=False))
     # print(query_result.to_csv(index=False))
 
-def write_to_files(df):
-    print(df.dtypes)
+import ast
 
+def write_to_files(df):
+    for (columnName, columnData) in df.items():
+        try:
+            k = ast.literal_eval(columnData.values)
+            print({"name": columnName, "type": type(k)})
+        except:
+            print(f"except: {columnName} : type {type(columnName)}")
 
     # for all columns, if list, write to file end pop from df
     # for all objects, make dummy columns
