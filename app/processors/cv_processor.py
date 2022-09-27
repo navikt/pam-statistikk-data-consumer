@@ -47,25 +47,26 @@ class CvProcessor(Processor):
         self.db.upsert(data=msg, table=self._table, primary_key=self._primary_key)
 
     def parse(self, kafka_msg):
+        def get_value(parent, child):
+            return kafka_msg[parent][child] if parent in kafka_msg.keys() and kafka_msg[parent] is not None else None
+
         def cv(param):
-            return kafka_msg["cv"][param] if "cv" in kafka_msg.keys() and kafka_msg["cv"] is not None else None
+            return get_value("cv", param)
 
         def job_wishes(param):
-            return kafka_msg["jobWishes"][param] if "jobWishes" in kafka_msg.keys() and kafka_msg["jobWishes"] is not None else None
+            return get_value("jobWishes", param)
 
         return {
             "aktorId": kafka_msg["aktorId"],
-            "foedselsdato": kafka_msg["personalia"]["foedselsdato"] if "personalia" in kafka_msg.keys() else None,
-            "postnummer": kafka_msg["personalia"]["postnummer"] if "personalia" in kafka_msg.keys() else None,
-            "kommunenr": kafka_msg["personalia"]["kommunenr"] if "personalia" in kafka_msg.keys() else None,
+            "foedselsdato": get_value("personalia", "foedselsdato"),
+            "postnummer": get_value("personalia", "postnummer"),
+            "kommunenr": get_value("personalia", "kommunenr"),
+            "fritattKandidatsok": get_value("oppfolgingsinformasjon", "fritattKandidatsok"),
+            "manuell": get_value("oppfolgingsinformasjon", "manuell"),
+            "erUnderOppfolging": get_value("oppfolgingsinformasjon", "erUnderOppfolging"),
             "synligForArbeidsgiver": cv("synligForArbeidsgiver"),
             "synligForVeileder": cv("synligForVeileder"),
             "hasCar": cv("hasCar"),
-            "oppfolgingsinformasjon": {
-                "fritattKandidatsok": kafka_msg["oppfolgingsinformasjon"]["fritattKandidatsok"],
-                "manuell": kafka_msg["oppfolgingsinformasjon"]["manuell"],
-                "erUnderOppfolging": kafka_msg["oppfolgingsinformasjon"]["erUnderOppfolging"],
-            } if kafka_msg["oppfolgingsinformasjon"] else None,
             "otherExperience": [
                 {
                     "role": exp["role"],
