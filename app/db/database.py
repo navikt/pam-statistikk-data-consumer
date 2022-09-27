@@ -63,7 +63,6 @@ class Database:
     def upsert(self, data: dict, table: str, primary_key: str):
         columns = [column.lower() for column in data.keys()]
         formatted_values = self.get_formatted_values(data)
-        logger.info(formatted_values)
         update_set_query_substrings = [f"{col} = EXCLUDED.{col}" for col in columns if col != primary_key]
         placeholders = ["%s" for _ in formatted_values]
 
@@ -77,7 +76,10 @@ class Database:
             raise e
 
     def get_formatted_values(self, data):
-        return [json.dumps(data[column]) if type(data[column]) is dict else data[column] for column in data.keys()]
+        return [json.dumps(data[column]) if type(data[column]) in [dict, list]
+                else data[column]
+                for column in data.keys()
+                ]
 
     def delete_cv(self, aktor_id: str, table: str = "ettersporsel_i_arbeidsmarkedet"):
         query = f"DELETE FROM {table} WHERE aktorid='{aktor_id}'"
