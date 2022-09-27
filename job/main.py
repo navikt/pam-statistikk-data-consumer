@@ -47,14 +47,24 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
 def read_from_db(con: Engine):
     query = "SELECT * FROM cv"
     query_result = pd.read_sql(query, con)
-    logger.info(query_result)
-    logger.info(query_result.to_csv(index=False))
-    print(query_result.to_csv(index=False))
+    return query_result
+    # logger.info(query_result)
+    # logger.info(query_result.to_csv(index=False))
+    # print(query_result.to_csv(index=False))
 
+def write_to_files(df):
+    for (columnName, columnData) in df.iteritems():
+        print({"name": columnName, "type": type(columnData.values)})
+
+
+    # for all columns, if list, write to file end pop from df
+    # for all objects, make dummy columns
+    # write df to file
 
 def main():
     connection = connect_with_connector()
-    read_from_db(connection)
+    df = read_from_db(connection)
+    write_to_files(df)
 
 
 if __name__ == "__main__":
