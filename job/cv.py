@@ -2,6 +2,9 @@ import pandas as pd
 
 from sqlalchemy.engine import Engine
 from gcp import write_to_gcp
+from logger import get_logger
+
+logger = get_logger(__name__)
 
 
 def _read_from_db(con: Engine):
@@ -18,6 +21,7 @@ def _list_to_file(name: str, aktorids: pd.Series, values: pd.Series):
                 value["aktorid"] = aktorid
                 new_list.append(value)
     new_df = pd.DataFrame(data=new_list)
+    logger.info(f"{name} er ferdig formattert. Klargjør skriving til GCP")
     write_to_gcp(name, new_df)
 
 
@@ -35,6 +39,7 @@ def _write_to_files(df):
         "erunderoppfolging",  # type'str'
     ]
     write_to_gcp("personalia", df[personalia])
+    logger.info("Ferdig med å skrive peronalia til fil")
 
     lists = [
         "otherexperience", # type'list'
@@ -49,6 +54,7 @@ def _write_to_files(df):
         "skills", # type'list'
     ]
     for name in lists:
+        logger.info(f"Formatterer {name} dataframe for skriving")
         _list_to_file(name, df["aktorid"], df[name])
 
 
