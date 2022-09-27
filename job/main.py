@@ -53,8 +53,7 @@ def read_from_db(con: Engine):
     # print(query_result.to_csv(index=False))
 
 def write_to_files(df):
-    for (columnName, columnData) in df.iteritems():
-        print({"name": columnName, "type": type(columnData.values)})
+    print(df.dtypes)
 
 
     # for all columns, if list, write to file end pop from df
