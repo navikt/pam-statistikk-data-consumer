@@ -21,7 +21,7 @@ def _list_to_file(name: str, aktorids: pd.Series, values: pd.Series):
                 value["aktorid"] = aktorid
                 new_list.append(value)
     new_df = pd.DataFrame(data=new_list)
-    logger.info(f"{name} er ferdig formattert. Klargjør skriving til GCP")
+    logger.info(f"{name} er ferdig formattert. Klargjør skriving til bucket")
     write_to_gcp(name, new_df)
 
 
