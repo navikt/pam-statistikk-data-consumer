@@ -57,10 +57,10 @@ import ast
 def write_to_files(df):
     for (columnName, columnData) in df.items():
         try:
-            k = ast.literal_eval(columnData.values)
+            k = ast.literal_eval(columnData)
             print({"name": columnName, "type": type(k)})
         except:
-            print(f"except: {columnName} : type {type(columnName)}")
+            print(f"except: {columnName} : type {type(columnData)}")
 
     # for all columns, if list, write to file end pop from df
     # for all objects, make dummy columns
