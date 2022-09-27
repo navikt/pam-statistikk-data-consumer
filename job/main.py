@@ -52,21 +52,49 @@ def read_from_db(con: Engine):
     # logger.info(query_result.to_csv(index=False))
     # print(query_result.to_csv(index=False))
 
-import ast
+from pprint import pprint
 
 def write_to_files(df):
-    for (columnName, columnData) in df.items():
-        index = 0
-        data = None
-        while data == None or index == columnData.size - 1:
-            columnData.iloc[index]
-            index += 1
+    def to_file(name: str, aktorids: pd.Series, values: pd.Series):
+        new_list = []
+        for aktorid in aktorids:
+            for personal_values in values:
+                for value in personal_values:
+                    value["aktorid"] = aktorid
+                    new_list.append(value)
+        new_df = pd.DataFrame(data=new_list)
+        print(new_df.head().to_string())
 
-        print(f"{columnName}: type {type(data)}")
+    main_df = [
+        "aktorid",  # type'str'
+        "foedselsdato",  # type'datetime.date'
+        "postnummer",  # type'str'
+        "kommunenr",  # type'str'
+        "synligforarbeidsgiver",  # type'numpy.bool_'
+        "synligforveileder",  # type'numpy.bool_'
+        "hascar",  # type'numpy.bool_'
+        "oppfolgingsinformasjon",  # type' obj# type'
+    ]
+    # make_dummy(oppfolgingsinformasjon)
+    # tofile(main_df)
 
-    # for all columns, if list, write to file end pop from df
-    # for all objects, make dummy columns
-    # write df to file
+
+    list_to_file = [
+        "otherexperience", # type'list'
+        "workexperience", # type'list'
+        "courses", # type'list'
+        "certificates", # type'list'
+        "languages", # type'list'
+        "education", # type'list'
+        "vocationalcertificates", # type'list'
+        "authorizations", # type'list'
+        "driverslicenses", # type'list'
+        "skills", # type'list'
+    ]
+    for name in list_to_file:
+        to_file(name, df["aktorid"], df[name])
+
+
 
 def main():
     connection = connect_with_connector()
@@ -77,3 +105,18 @@ def main():
 if __name__ == "__main__":
     logger.info("Starter naisjob")
     main()
+
+
+
+
+    # for (columnName, columnData) in df.items():
+    #     index = 0
+    #     data = None
+    #     while data == None or index == columnData.size - 1:
+    #         columnData.iloc[index]
+    #         index += 1
+    #
+    #     print(f"{columnName}: type {type(data)}")
+
+    # for all columns, if list, write to file end pop from df
+    # for all objects, make dummy colum
