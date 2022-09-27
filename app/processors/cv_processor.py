@@ -54,7 +54,7 @@ class CvProcessor(Processor):
             return get_value("cv", param)
 
         def job_wishes(param):
-            return get_value("jobWishes", param)
+            return get_value("jobWishes", param) or []
 
         return {
             "aktorId": kafka_msg["aktorId"],
