@@ -23,8 +23,8 @@ def _list_to_file(name: str, dataframe: pd.DataFrame):
             new_list.append({"aktorid": aktorid, **value})
 
     new_df = pd.DataFrame(data=new_list)
-    logger.info(f"{name} er ferdig formattert. Klargjør skriving til GCP-bucket")
-    write_to_gcp(name, new_df)
+    logger.info(f"name er ferdig formattert. Klargjør skriving til GCP-bucket")
+    write_to_gcp(f"cv/{name}", new_df)
 
 
 def _write_to_files(df):
@@ -40,7 +40,7 @@ def _write_to_files(df):
         "manuell",  # type'str'
         "erunderoppfolging",  # type'str'
     ]
-    write_to_gcp("personalia", df[personalia])
+    write_to_gcp("cv/personalia", df[personalia])
     logger.info("Ferdig med å skrive peronalia til fil")
 
     lists = [

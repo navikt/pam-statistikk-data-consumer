@@ -24,7 +24,7 @@ def publish_dataframe_as_file(client: Client, bucket_name: str, df: pd.DataFrame
     logger.info("publish success")
 
 
-def write_to_gcp(name: str, df: pd.DataFrame):
+def write_to_gcp(file_name: str, df: pd.DataFrame):
     client = create_client()
     bucket_name = "pam-statistikk"
-    publish_dataframe_as_file(client=client, bucket_name=bucket_name, df=df, file_name=name)
+    publish_dataframe_as_file(client=client, bucket_name=bucket_name, df=df, file_name=file_name)
