@@ -13,17 +13,19 @@ def _read_from_db(con: Engine):
     return query_result
 
 
-def _obj_to_file(name: str, dataframe: pd.DataFrame):
+def _jobwishes_to_file(name: str, dataframe: pd.DataFrame):
     for index, row in dataframe.iterrows():
         aktorid = row["aktorid"]
         jobwishes = row[name]
 
         for key, value in jobwishes.items():
-            if key == "startoption":
+            if key == "startOption":
                 pass
-
-            _list_to_file(key, pd.DataFrame({"aktorid": aktorid, key: value}, index=[0]), "jobwishes")
-
+            try:
+                if(len(value) > 0 and value != None):
+                    _list_to_file(name=key, dataframe=pd.DataFrame({"aktorid": aktorid, key: value}, index=[0]), directory="jobwishes")
+            except Exception as e:
+                print(f"{key} : {e}")
 
 def _list_to_file(name: str, dataframe: pd.DataFrame, directory: str):
     new_list = []
@@ -71,7 +73,7 @@ def _write_to_files(df):
         logger.info(f"Formatterer {name} dataframe for skriving")
         _list_to_file(name, df[["aktorid", name]], directory="cv")
 
-    _obj_to_file("jobwishes", df[["aktorid", "jobwishes"]])
+    _jobwishes_to_file("jobwishes", df[["aktorid", "jobwishes"]])
 
 
 def read_write_cv(con: Engine):
