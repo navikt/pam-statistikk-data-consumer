@@ -13,13 +13,15 @@ def _read_from_db(con: Engine):
     return query_result
 
 
-def _list_to_file(name: str, aktorids: pd.Series, values: pd.Series):
+def _list_to_file(name: str, dataframe: pd.DataFrame):
     new_list = []
-    for aktorid in aktorids:
-        for personal_values in values:
-            for value in personal_values:
-                value["aktorid"] = aktorid
-                new_list.append(value)
+    for index, row in dataframe.iterrows():
+        values = row[name]
+        aktorid = row["aktorid"]
+
+        for value in values:
+            new_list.append({"aktorid": aktorid, **value})
+
     new_df = pd.DataFrame(data=new_list)
     logger.info(f"{name} er ferdig formattert. Klargjør skriving til GCP-bucket")
     write_to_gcp(name, new_df)
@@ -55,7 +57,7 @@ def _write_to_files(df):
     ]
     for name in lists:
         logger.info(f"Formatterer {name} dataframe for skriving")
-        _list_to_file(name, df["aktorid"], df[name])
+        _list_to_file(name, df[["aktorid", name]])
 
 
 def read_write_cv(con: Engine):
