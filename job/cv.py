@@ -83,7 +83,7 @@ def _list_to_file(name: str, dataframe: pd.DataFrame, directory: str):
                 logger.info(f"Value: {value} - ERROR: {e}")
 
     new_df = pd.DataFrame(data=new_list)
-    logger.info(f"name er ferdig formattert. Klargjør skriving til GCP-bucket")
+    logger.info(f"{name} er ferdig formattert. Klargjør skriving til GCP-bucket")
     write_to_gcp(f"{directory}/{name}", new_df)
 
 
