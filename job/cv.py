@@ -1,3 +1,4 @@
+import copy
 from collections import defaultdict
 import pandas as pd
 
@@ -6,6 +7,15 @@ from gcp import write_to_gcp
 from logger import get_logger
 
 logger = get_logger(__name__)
+
+jobwishes_enums_template = {
+    "startoption": {"None": False, "LEDIG_NAA": False, "ETTER_TRE_MND": False, "ETTER_AVTALE": False},
+    "occupationtypes": {"ENGASJEMENT": False, "FAST": False, "FERIEJOBB": False, "PROSJEKT": False, "SELVSTENDIG_NAERINGSDRIVENDE": False, "SESONG": False, "VIKARIAT": False, "TRAINEE": False, "LAERLING": False, "ANNET": False},
+    "worktimes": {"DAGTID": False, "KVELD": False, "NATT": False},
+    "workdays": {"LOERDAG": False, "SOENDAG": False, "UKEDAGER": False},
+    "workshifttypes": {"SKIFT": False, "TURNUS": False, "VAKT": False},
+    "workloadtypes": {"HELTID": False, "DELTID": False}
+}
 
 
 def _read_from_db(con: Engine):
@@ -18,17 +28,30 @@ def _jobwishes_to_file(dataframe: pd.DataFrame):
     formatted_lists = defaultdict(list)
 
     for index, row in dataframe.iterrows():
+        jobwishes_enums = copy.deepcopy(jobwishes_enums_template)
         aktorid = row["aktorid"]
         obj = row["jobwishes"]
 
         for key, value in obj.items():
-            if value:
+            if key.lower() in jobwishes_enums.keys():
+                if type(value) is list:
+                    for item in value:
+                        jobwishes_enums[key.lower()][item] = True
+                else:
+                    jobwishes_enums[key.lower()][value] = True
+            elif value:
                 formatted_lists[key.lower()].append({"aktorid": aktorid, key.lower(): value})
+
+        settings = {"aktorid": aktorid}
+        for key, value in jobwishes_enums.items():
+            for val_key, enum in value.items():
+                settings[f"{key}_{val_key}"] = enum
+        formatted_lists["settings"].append(settings)
 
     for key, value in formatted_lists.items():
         frame = pd.DataFrame(value)
-        if key == "startoption":
-            write_to_gcp("jobwishes/startoption", frame)
+        if key == "settings":
+            write_to_gcp("jobwishes/settings", frame)
         else:
             _list_to_file(key, frame, "jobwishes")
 
