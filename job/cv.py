@@ -57,7 +57,7 @@ def _jobwishes_to_file(dataframe: pd.DataFrame):
         formatted_lists["occupations"].append({"aktorid": aktorid, "occupations": occupations})
 
         conditions = _get_conditions(jobwishes=jobwishes)
-        formatted_lists["conditions"].append({"aktorid": aktorid, "conditions": conditions})
+        formatted_lists["conditions"].append({"aktorid": aktorid, **conditions})
 
     for category, alternatives in formatted_lists.items(): # loc, occup & conditions
         frame = pd.DataFrame(alternatives)
