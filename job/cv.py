@@ -42,16 +42,16 @@ def _jobwishes_to_file(dataframe: pd.DataFrame):
             elif value:
                 formatted_lists[key.lower()].append({"aktorid": aktorid, key.lower(): value})
 
-        settings = {"aktorid": aktorid}
+        conditions = {"aktorid": aktorid}
         for key, value in jobwishes_enums.items():
             for val_key, enum in value.items():
-                settings[f"{key}_{val_key}"] = enum
-        formatted_lists["settings"].append(settings)
+                conditions[f"{key}_{val_key}"] = enum
+        formatted_lists["conditions"].append(conditions)
 
     for key, value in formatted_lists.items():
         frame = pd.DataFrame(value)
-        if key == "settings":
-            write_to_gcp("jobwishes/settings", frame)
+        if key == "conditions":
+            write_to_gcp("jobwishes/conditions", frame)
         else:
             _list_to_file(key, frame, "jobwishes")
 
