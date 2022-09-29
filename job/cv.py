@@ -8,52 +8,63 @@ from logger import get_logger
 
 logger = get_logger(__name__)
 
-jobwishes_enums_template = {
-    "startoption": {"None": False, "LEDIG_NAA": False, "ETTER_TRE_MND": False, "ETTER_AVTALE": False},
-    "occupationtypes": {"ENGASJEMENT": False, "FAST": False, "FERIEJOBB": False, "PROSJEKT": False, "SELVSTENDIG_NAERINGSDRIVENDE": False, "SESONG": False, "VIKARIAT": False, "TRAINEE": False, "LAERLING": False, "ANNET": False},
-    "worktimes": {"DAGTID": False, "KVELD": False, "NATT": False},
-    "workdays": {"LOERDAG": False, "SOENDAG": False, "UKEDAGER": False},
-    "workshifttypes": {"SKIFT": False, "TURNUS": False, "VAKT": False},
-    "workloadtypes": {"HELTID": False, "DELTID": False}
-}
-
-
 def _read_from_db(con: Engine):
     query = "SELECT * FROM cv"
     query_result = pd.read_sql(query, con)
     return query_result
 
 
+def _get_dummies(enums):
+    dummies = {}
+    for category, category_enums in enums.items():
+        for enum_title, enum_value in category_enums.items():
+            dummies[f"{category}_{enum_title}"] = enum_value
+    return dummies
+
+
+def _get_conditions(jobwishes: dict):
+    jobwishes_enums = {
+        "startoption": {"None": False, "LEDIG_NAA": False, "ETTER_TRE_MND": False, "ETTER_AVTALE": False},
+        "occupationtypes": {"ENGASJEMENT": False, "FAST": False, "FERIEJOBB": False, "PROSJEKT": False,
+                            "SELVSTENDIG_NAERINGSDRIVENDE": False, "SESONG": False, "VIKARIAT": False, "TRAINEE": False,
+                            "LAERLING": False, "ANNET": False},
+        "worktimes": {"DAGTID": False, "KVELD": False, "NATT": False},
+        "workdays": {"LOERDAG": False, "SOENDAG": False, "UKEDAGER": False},
+        "workshifttypes": {"SKIFT": False, "TURNUS": False, "VAKT": False},
+        "workloadtypes": {"HELTID": False, "DELTID": False}
+    }
+
+    for category, alternatives in jobwishes.items():
+        if type(alternatives) is list:
+            for item in alternatives:
+                jobwishes_enums[category.lower()][item] = True
+        else:
+            jobwishes_enums[category.lower()][alternatives] = True
+
+    return _get_dummies(jobwishes_enums)
+
+
 def _jobwishes_to_file(dataframe: pd.DataFrame):
     formatted_lists = defaultdict(list)
-
-    for index, row in dataframe.iterrows():
-        jobwishes_enums = copy.deepcopy(jobwishes_enums_template)
+    for _, row in dataframe.iterrows():  # pr person
+        jobwishes = row["jobwishes"]
         aktorid = row["aktorid"]
-        obj = row["jobwishes"]
 
-        for key, value in obj.items():
-            if key.lower() in jobwishes_enums.keys():
-                if type(value) is list:
-                    for item in value:
-                        jobwishes_enums[key.lower()][item] = True
-                else:
-                    jobwishes_enums[key.lower()][value] = True
-            elif value:
-                formatted_lists[key.lower()].append({"aktorid": aktorid, key.lower(): value})
+        locations = jobwishes.pop("locations")
+        formatted_lists["locations"].append({"aktorid": aktorid, "locations": locations})
 
-        settings = {"aktorid": aktorid}
-        for key, value in jobwishes_enums.items():
-            for val_key, enum in value.items():
-                settings[f"{key}_{val_key}"] = enum
-        formatted_lists["settings"].append(settings)
+        occupations = jobwishes.pop("occupations")
+        formatted_lists["occupations"].append({"aktorid": aktorid, "occupations": occupations})
 
-    for key, value in formatted_lists.items():
-        frame = pd.DataFrame(value)
-        if key == "settings":
-            write_to_gcp("jobwishes/settings", frame)
+        conditions = _get_conditions(jobwishes=jobwishes)
+        formatted_lists["conditions"].append({"aktorid": aktorid, "conditions": conditions})
+
+    for category, alternatives in formatted_lists.items(): # loc, occup & conditions
+        frame = pd.DataFrame(alternatives)
+        if category == "conditions":
+            write_to_gcp("jobwishes/conditions", frame)
         else:
-            _list_to_file(key, frame, "jobwishes")
+            _list_to_file(category, frame, "jobwishes")
 
 
 def _list_to_file(name: str, dataframe: pd.DataFrame, directory: str):
