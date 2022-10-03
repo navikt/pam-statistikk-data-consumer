@@ -41,7 +41,7 @@ spec:
     slack:
       channel: "arbeidsplassen-data"
       prependText: "<!here> | "
-      send_resolved: "true"
+      send_resolved: true
       username: "PAM Alertbot"
   alerts:
   - alert: "pam-statistikk-nais-job kjørte ikke fullstendig"
