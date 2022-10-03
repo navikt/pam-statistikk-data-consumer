@@ -6,7 +6,7 @@ metadata:
   labels:
     "team": teampam
 spec:
-#  schedule: '0 8 * * *'
+  schedule: '0 8 * * *'
   image: {{image}}
   envFrom:
     - secret: pam-statistikk-job
@@ -44,15 +44,13 @@ spec:
       send_resolved: true
       username: "PAM Alertbot"
   alerts:
-  - alert: "pam-statistikk-nais-job kjørte ikke fullstendig"
-    description: "Denne jobben kjører kun en gang om dagen og er viktig for statistikk. \
-     \ Job: {{ $labels.job_name }}, pod: {{ $labels.kubernetes_pod_node_name }} \
-     \ namespace: {{ $labels.namespace }}"
+  - alert: "pam-statistikk-nais-job Naisjob feiler"
+    description: "Denne jobben kjører kun en gang om dagen og er viktig for statistikk"
     expr: "kube_job_status_failed{job_name=\"pam-statistikk-nais-job\"} >= 1"
     for: "2m"
-    action: "kubectl describe pod {{ $labels.kubernetes_pod_node_name }} -n {{ $labels.namespace }} \
-      \ for events, og `kubectl logs {{ $labels.kubernetes_pod_node_name }} -n {{ $labels.namepasce }} \
-      \ for logger."
+    action: "´kubectl describe pod pam-statistikk-nais-job -n teampam´ \
+      \ For pod laget av job, kjør ´kubectl logs <podname>´
+      \ Se logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-nais-job\"` "
     documentation: "https://github.com/navikt/pam-statistikk-data-consumer"
     sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
     severity: "danger"
