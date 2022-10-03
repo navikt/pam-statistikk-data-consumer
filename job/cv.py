@@ -1,4 +1,3 @@
-import copy
 from collections import defaultdict
 import pandas as pd
 
@@ -7,6 +6,7 @@ from gcp import write_to_gcp
 from logger import get_logger
 
 logger = get_logger(__name__)
+
 
 def _read_from_db(con: Engine):
     query = "SELECT * FROM cv"

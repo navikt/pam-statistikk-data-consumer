@@ -6,9 +6,12 @@ metadata:
   labels:
     "team": teampam
 spec:
+  schedule: '0 8 * * *'
   image: {{image}}
   envFrom:
     - secret: pam-statistikk-job
+  backoffLimit: 5
+  completions: 1
   resources:
     limits:
       cpu: "200m"
@@ -22,3 +25,34 @@ spec:
     buckets:
       - name: pam-statistikk
         premission: READ
+
+---
+
+apiVersion: "nais.io/v1"
+kind: "Alert"
+metadata:
+  name: "pam-statistikk-nais-job"
+  namespace: "teampam"
+  labels:
+    "team": "teampam"
+    "start.nais.io/created-by": "me"
+spec:
+  receivers:
+    slack:
+      channel: "arbeidsplassen-data"
+      prependText: "<!here> | "
+      send_resolved: "true"
+      username: "PAM Alertbot"
+  alerts:
+  - alert: "pam-statistikk-nais-job kjørte ikke fullstendig"
+    description: "Denne jobben kjører kun en gang om dagen og er viktig for statistikk. \
+     \Job: {{ $labels.job_name }}, pod: {{ $labels.kubernetes_pod_node_name }} \
+     \ namespace: {{ $labels.namespace }}"
+    expr: "kube_job_status_failed{job_name=\"pam-statistikk-nais-job\"} >= 1"
+    for: "2m"
+    action: "kubectl describe pod {{ $labels.kubernetes_pod_node_name }} -n {{ $labels.namepasce \
+      \ }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_node_name }} -n {{ $labels.namepasce\
+      \ }}` for logger."
+    documentation: "https://github.com/navikt/pam-statistikk-data-consumer"
+    sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
+    severity: "danger"
