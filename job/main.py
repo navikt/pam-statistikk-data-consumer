@@ -14,6 +14,4 @@ def main():
 
 if __name__ == "__main__":
     logger.info("Starter naisjob")
-    logger.info("Tester med zero division error for å trigge alert")
-    0/0
     main()
