@@ -6,6 +6,7 @@ on:
     paths:
       - 'job/**'
       - '.nais/nais-job.yaml'
+      - '.github/workflows/naisjob.yaml'
 
 env:
   "JOB_IMAGE": "ghcr.io/${{ github.repository }}-job:${{ github.sha }}"
