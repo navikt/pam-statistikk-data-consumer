@@ -5,6 +5,9 @@ on:
     - "main"
     paths:
       - 'app/**'
+      - '.nais/consumer.yaml'
+      - '.github/workflows/nais-application.yaml'
+
 
 env:
   "CONSUMER_IMAGE": "ghcr.io/${{ github.repository }}:${{ github.sha }}"
