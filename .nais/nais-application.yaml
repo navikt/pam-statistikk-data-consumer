@@ -63,6 +63,7 @@ spec:
       summary: "Container killed (instance {{ $labels.instance }})"
       description: "A container has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
       documentation: "https://github.com/navikt/pam-statistikk-data-consumer"
+      action: "logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-data-consumer\"` "
       sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
       severity: "warning"
 
