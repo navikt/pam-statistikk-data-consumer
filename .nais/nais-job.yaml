@@ -9,7 +9,7 @@ spec:
   image: {{image}}
   envFrom:
     - secret: pam-statistikk-job
-#  schedule: "0 1 * * *"
+  schedule: "20 10 * * *"
   backoffLimit: 5
   completions: 1
   resources:
