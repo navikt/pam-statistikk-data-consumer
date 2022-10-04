@@ -56,7 +56,7 @@ spec:
 
   - alert: "pam-statistikk-nais-job Naisjob mangler!"
     description: "En viktig nais job er fjernet \n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}."
-    expr: "absent(up{job="pam-statistikk-nais-job"})"
+    expr: "absent(up{job=\"pam-statistikk-nais-job\"})"
     for: "2m"
     action:
       "Kjør den opp igjen enten med github workflows, eller se etter feil i \
