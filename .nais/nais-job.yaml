@@ -41,7 +41,7 @@ spec:
       channel: "arbeidsplassen-data"
       prependText: "<!here> | "
       send_resolved: true
-      username: "PAM Alertobot"
+      username: "PAM Alert-o-Bot"
   alerts:
   - alert: "pam-statistikk-nais-job Naisjob feiler"
     description: "Denne jobben kjører kun en gang om dagen og er viktig for statistikk"
@@ -55,12 +55,12 @@ spec:
     severity: "danger"
 
   - alert: "pam-statistikk-nais-job Naisjob mangler!"
-      expr: "absent(up{job="pam-statistikk-nais-job"})"
-      for: "0m"
-      labels:
-        severity: "danger"
-      annotations:
-        summary: "Nais job er fjernet (instance {{ $labels.instance }})"
-        description: "En viktig nais job er fjernet \n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}. \
-          \ Kjør den opp igjen enten med github workflows, eller se etter feil i \
-          \ logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-nais-job\"` "
+    expr: "absent(up{job="pam-statistikk-nais-job"})"
+    for: "0m"
+    labels:
+      severity: "danger"
+    annotations:
+      summary: "Nais job er fjernet (instance {{ $labels.instance }})"
+      description: "En viktig nais job er fjernet \n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}. \
+        \ Kjør den opp igjen enten med github workflows, eller se etter feil i \
+        \ logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-nais-job\"` "

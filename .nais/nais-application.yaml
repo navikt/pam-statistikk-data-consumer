@@ -55,7 +55,7 @@ spec:
       channel: "arbeidsplassen-data"
       prependText: "<!here> | "
       send_resolved: true
-      username: "PAM Alertobot"
+      username: "PAM Alert-o-Bot"
   alerts:
     - alert: "ContainerKilled"
         expr: "time() - container_last_seen{container=\"pam-statistikk-data-consumer\"} > 60"
