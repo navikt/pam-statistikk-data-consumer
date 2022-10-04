@@ -56,7 +56,9 @@ spec:
 
   - alert: "pam-statistikk-nais-job Naisjob mangler!"
     description: "Ingen Nais job ble funnet for pam-statistikk-nais-job"
-    expr: "absent(kube_job_info{job_name=~\"pam-statistikk-nais-job.+\"})"
+      # used cronjob instead of nais job as alert will trigger on initial deploy. Trigger only if
+      # not found in system. Cronjobs create Naisjobs.
+    expr: "absent(kube_cronjob_created{cronjob=\"pam-statistikk-nais-job\"})"
     for: "2m"
     action:
       "Kjør den opp igjen enten med github workflows, eller se etter feil i \
