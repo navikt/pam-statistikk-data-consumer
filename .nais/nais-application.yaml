@@ -58,10 +58,10 @@ spec:
       username: "PAM Alert-o-Bot"
   alerts:
     - alert: "ContainerKilled"
-        expr: "time() - container_last_seen{container=\"pam-statistikk-data-consumer\"} > 60"
-        for: "0m"
-        labels:
-          severity: "warning"
-        annotations:
-          summary: "Container killed (instance {{ $labels.instance }})"
-          description: "A container has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+      expr: "time() - container_last_seen{container=\"pam-statistikk-data-consumer\"} > 60"
+      for: "0m"
+      labels:
+        severity: "warning"
+      annotations:
+        summary: "Container killed (instance {{ $labels.instance }})"
+        description: "A container has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
