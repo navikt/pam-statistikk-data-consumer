@@ -55,12 +55,12 @@ spec:
     severity: "danger"
 
   - alert: "pam-statistikk-nais-job Naisjob mangler!"
+    description: "En viktig nais job er fjernet \n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}."
     expr: "absent(up{job="pam-statistikk-nais-job"})"
-    for: "0m"
-    labels:
-      severity: "danger"
-    annotations:
-      summary: "Nais job er fjernet (instance {{ $labels.instance }})"
-      description: "En viktig nais job er fjernet \n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}. \
-        \ Kjør den opp igjen enten med github workflows, eller se etter feil i \
-        \ logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-nais-job\"` "
+    for: "2m"
+    action:
+      "Kjør den opp igjen enten med github workflows, eller se etter feil i \
+      \ logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-nais-job\"` "
+    documentation: "https://github.com/navikt/pam-statistikk-data-consumer"
+    sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
+    severity: "danger"

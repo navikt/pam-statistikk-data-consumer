@@ -60,8 +60,9 @@ spec:
     - alert: "ContainerKilled"
       expr: "time() - container_last_seen{container=\"pam-statistikk-data-consumer\"} > 60"
       for: "0m"
-      labels:
-        severity: "warning"
-      annotations:
-        summary: "Container killed (instance {{ $labels.instance }})"
-        description: "A container has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+      summary: "Container killed (instance {{ $labels.instance }})"
+      description: "A container has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+      documentation: "https://github.com/navikt/pam-statistikk-data-consumer"
+      sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
+      severity: "warning"
+
