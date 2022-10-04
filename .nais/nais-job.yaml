@@ -55,8 +55,8 @@ spec:
     severity: "danger"
 
   - alert: "pam-statistikk-nais-job Naisjob mangler!"
-    description: "En viktig nais job er fjernet \n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}."
-    expr: "absent(up{job=\"pam-statistikk-nais-job\"})"
+    description: "Ingen Nais job ble funnet for pam-statistikk-nais-job"
+    expr: "absent(kube_job_info{job_name=~\"pam-statistikk-nais-job.+\"})"
     for: "2m"
     action:
       "Kjør den opp igjen enten med github workflows, eller se etter feil i \
