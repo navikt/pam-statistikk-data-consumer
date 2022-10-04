@@ -38,3 +38,30 @@ spec:
             envVarPrefix: DB
             users:
               - name: statistikk-read-user
+
+---
+
+apiVersion: "nais.io/v1"
+kind: "Alert"
+metadata:
+  name: "pam-statistikk-data-consumer"
+  namespace: "teampam"
+  labels:
+    "team": "teampam"
+    "start.nais.io/created-by": "me"
+spec:
+  receivers:
+    slack:
+      channel: "arbeidsplassen-data"
+      prependText: "<!here> | "
+      send_resolved: true
+      username: "PAM Alertobot"
+  alerts:
+    - alert: "ContainerKilled"
+        expr: "time() - container_last_seen{container=\"pam-statistikk-data-consumer\"} > 60"
+        for: "0m"
+        labels:
+          severity: "warning"
+        annotations:
+          summary: "Container killed (instance {{ $labels.instance }})"
+          description: "A container has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
