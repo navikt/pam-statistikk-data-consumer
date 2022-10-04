@@ -44,7 +44,7 @@ spec:
 apiVersion: "nais.io/v1"
 kind: "Alert"
 metadata:
-  name: "pam-statistikk-data-consumer"
+  name: "pam-statistikk-data-consumer-alert"
   namespace: "teampam"
   labels:
     "team": "teampam"

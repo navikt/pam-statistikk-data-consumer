@@ -30,7 +30,7 @@ spec:
 apiVersion: "nais.io/v1"
 kind: "Alert"
 metadata:
-  name: "pam-statistikk-nais-job"
+  name: "pam-statistikk-nais-job-alert"
   namespace: "teampam"
   labels:
     "team": "teampam"
