@@ -9,9 +9,8 @@ spec:
   image: {{image}}
   envFrom:
     - secret: pam-statistikk-job
-  schedule: "20 10 * * *"
+  schedule: "30 10 * * *"
   backoffLimit: 5
-  completions: 1
   resources:
     limits:
       cpu: "200m"
@@ -54,3 +53,14 @@ spec:
     documentation: "https://github.com/navikt/pam-statistikk-data-consumer"
     sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
     severity: "danger"
+
+  - alert: PrometheusJobMissing
+      expr: absent(up{job="pam-statistikk-nais-job"})
+      for: 0m
+      labels:
+        severity: danger
+      annotations:
+        summary: Nais job er fjernet (instance {{ $labels.instance }})
+        description: "En viktig nais job er fjernet \n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}. \
+         \ Kjør den opp igjen enten med github workflows, eller se etter feil i \
+         \ logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-nais-job\"` "
