@@ -6,10 +6,10 @@ metadata:
   labels:
     "team": teampam
 spec:
-  schedule: '0 8 * * *'
   image: {{image}}
   envFrom:
     - secret: pam-statistikk-job
+#  schedule: "0 1 * * *"
   backoffLimit: 5
   completions: 1
   resources:
