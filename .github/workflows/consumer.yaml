@@ -5,8 +5,8 @@ on:
     - "main"
     paths:
       - 'app/**'
-      - '.nais/consumer.yaml'
-      - '.github/workflows/nais-application.yaml'
+      - '.nais/nais-application.yaml'
+      - '.github/workflows/consumer.yaml'
 
 
 env:
