@@ -9,7 +9,7 @@ spec:
   image: {{image}}
   envFrom:
     - secret: pam-statistikk-job
-  schedule: "30 10 * * *"
+  schedule: "0 3 * * *"
   backoffLimit: 5
   resources:
     limits:
@@ -45,7 +45,7 @@ spec:
   alerts:
   - alert: "pam-statistikk-nais-job Naisjob feiler"
     description: "Denne jobben kjører kun en gang om dagen og er viktig for statistikk"
-    expr: "kube_job_status_failed{job_name=\"pam-statistikk-nais-job\"} >= 1"
+    expr: "kube_job_status_failed{job_name=\"pam-statistikk-nais-job\"} > 0"
     for: "2m"
     action: "´kubectl describe pod pam-statistikk-nais-job -n teampam´ \
       \ For pod laget av job, kjør ´kubectl logs <podname>´
@@ -54,15 +54,9 @@ spec:
     sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
     severity: "danger"
 
-  - alert: "pam-statistikk-nais-job Naisjob mangler!"
-    description: "Ingen Nais job ble funnet for pam-statistikk-nais-job"
-      # used cronjob instead of nais job as alert will trigger on initial deploy. Trigger only if
-      # not found in system. Cronjobs create Naisjobs.
-    expr: "absent(kube_cronjob_created{cronjob=\"pam-statistikk-nais-job\"})"
-    for: "2m"
-    action:
-      "Kjør den opp igjen enten med github workflows, eller se etter feil i \
-      \ logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-nais-job\"` "
-    documentation: "https://github.com/navikt/pam-statistikk-data-consumer"
-    sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
-    severity: "danger"
+  - alert: Naisjob Kjørte ikke
+    description: Naisjob pam-statistikk-nais-job har mulig ikke kjørt i riktig tidsrom!
+    expr: 'time() - max(kube_job_status_completion_time{job_name=~"pam-statistikk-nais-job></naisjob-navn>.+"}) > 90000'
+    for: 1m
+    action: "Se logger på https://logs.adeo.no -> søk etter `pod:pam-statistikk-nais-job> AND namespace:teampam`"
+    severity: warning
