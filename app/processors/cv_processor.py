@@ -37,14 +37,19 @@ class CvProcessor(Processor):
 
     def process(self, msg: ConsumerRecord):
         if msg.value["meldingstype"] == "SLETT":
-            return None
+            self.delete_from_db(msg.value["aktorId"])
+            return
 
         parsed_msg = self.parse(msg.value)
         self.insert_to_db(parsed_msg)
 
     def insert_to_db(self, msg: dict):
-        logger.info(f"upserting {msg['aktorId']}")
+        logger.info(f"Upserting CV for aktørId: {msg['aktorId']}")
         self.db.upsert(data=msg, table=self._table, primary_key=self._primary_key)
+
+    def delete_from_db(self, aktor_id: str):
+        logger.info(f"Deleting CV for aktørId: {aktor_id}")
+        self.db.delete_cv(aktor_id=aktor_id, table=self._table)
 
     def parse(self, kafka_msg):
         def get_value(parent, child):
