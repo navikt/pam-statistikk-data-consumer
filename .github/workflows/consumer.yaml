@@ -40,6 +40,7 @@ jobs:
         APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
         CLUSTER: "dev-gcp"
         RESOURCE: ".nais/nais-application.yaml"
+        VARS: ".nais/dev.yaml"
         VAR: image=${{ env.CONSUMER_IMAGE }}
   "deployAppToProd":
     name: "Deploy consumer-application to prod"
@@ -53,4 +54,5 @@ jobs:
         APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
         CLUSTER: "prod-gcp"
         RESOURCE: ".nais/nais-application.yaml"
+        VARS: ".nais/prod.yaml"
         VAR: image=${{ env.CONSUMER_IMAGE }}
