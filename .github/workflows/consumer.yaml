@@ -8,7 +8,6 @@ on:
       - '.nais/nais-application.yaml'
       - '.github/workflows/consumer.yaml'
 
-
 env:
   "CONSUMER_IMAGE": "ghcr.io/${{ github.repository }}:${{ github.sha }}"
 jobs:
@@ -40,5 +39,18 @@ jobs:
       env:
         APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
         CLUSTER: "dev-gcp"
+        RESOURCE: ".nais/nais-application.yaml"
+        VAR: image=${{ env.CONSUMER_IMAGE }}
+  "deployAppToProd":
+    name: "Deploy consumer-application to prod"
+    needs: "build"
+    runs-on: "ubuntu-18.04"
+    steps:
+    - uses: "actions/checkout@v3"
+    - name: "Deploy to PROD"
+      uses: "nais/deploy/actions/deploy@v1"
+      env:
+        APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+        CLUSTER: "prod-gcp"
         RESOURCE: ".nais/nais-application.yaml"
         VAR: image=${{ env.CONSUMER_IMAGE }}
