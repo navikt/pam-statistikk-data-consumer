@@ -72,7 +72,7 @@ class Database:
         try:
             self.execute_query(query, tuple(formatted_values))
         except Exception as e:
-            logger.error(f"Error when upserting {table} - : {data[primary_key]} - Error: {e}")
+            logger.error(f"Error when upserting {table} - : {data['aktorId']} - Error: {e}")
             raise e
 
     def get_formatted_values(self, data):
