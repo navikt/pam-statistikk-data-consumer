@@ -11,7 +11,7 @@ logger = get_logger(__name__)
 class API:
     def __init__(self):
         self._is_alive = True
-        self._is_ready = False
+        self._is_ready = True
         self._app = FastAPI()
         self.add_endpoints()
 
@@ -29,6 +29,7 @@ class API:
 
     def healthiness(self):
         if self._is_alive:
+            logger.info(f"API: returned status 200 on isalive")
             return JSONResponse(status_code=status.HTTP_200_OK, content={"Status": f"ok"})
         else:
             logger.info(f"API: returned status 500 on isalive")
@@ -39,6 +40,7 @@ class API:
 
     def readiness(self):
         if self._is_ready:
+            logger.info(f"API: returned status 200 on isready")
             return JSONResponse(status_code=status.HTTP_200_OK, content={"Status": f"ok"})
         else:
             logger.info(f"API: returned status 500 on isready")
