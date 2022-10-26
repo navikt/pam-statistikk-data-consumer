@@ -29,10 +29,10 @@ class API:
 
     def healthiness(self):
         if self._is_alive:
-            logger.info(f"API: returned status 200 on isalive")
+            logger.debug(f"API: returned status 200 on isalive")
             return JSONResponse(status_code=status.HTTP_200_OK, content={"Status": f"ok"})
         else:
-            logger.info(f"API: returned status 500 on isalive")
+            logger.debug(f"API: returned status 500 on isalive")
             return JSONResponse(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content={"Status": f"Unhealthy"},
@@ -40,10 +40,10 @@ class API:
 
     def readiness(self):
         if self._is_ready:
-            logger.info(f"API: returned status 200 on isready")
+            logger.debug(f"API: returned status 200 on isready")
             return JSONResponse(status_code=status.HTTP_200_OK, content={"Status": f"ok"})
         else:
-            logger.info(f"API: returned status 500 on isready")
+            logger.debug(f"API: returned status 500 on isready")
             return JSONResponse(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content={"Status": f"NotReady"},
