@@ -27,7 +27,7 @@ class API:
         logger.info(f"API alive endpoint set to {arg}")
         self._is_ready = arg
 
-    def healthiness(self):
+    async def healthiness(self):
         if self._is_alive:
             logger.debug(f"API: returned status 200 on isalive")
             return JSONResponse(status_code=status.HTTP_200_OK, content={"Status": f"ok"})
@@ -38,7 +38,7 @@ class API:
                 content={"Status": f"Unhealthy"},
             )
 
-    def readiness(self):
+    async def readiness(self):
         if self._is_ready:
             logger.debug(f"API: returned status 200 on isready")
             return JSONResponse(status_code=status.HTTP_200_OK, content={"Status": f"ok"})
