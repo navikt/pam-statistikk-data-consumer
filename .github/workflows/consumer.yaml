@@ -44,7 +44,7 @@ jobs:
         VAR: image=${{ env.CONSUMER_IMAGE }}
   "deployAppToProd":
     name: "Deploy consumer-application to prod"
-    needs: "build"
+    needs: ["build", "deployAppToDev"]
     runs-on: "ubuntu-18.04"
     steps:
     - uses: "actions/checkout@v3"
