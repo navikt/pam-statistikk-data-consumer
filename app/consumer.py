@@ -1,3 +1,4 @@
+import _thread
 import threading
 import os
 import uuid
@@ -70,6 +71,7 @@ class Consumer:
 
         self._logger.error("Kafka consumer stopped. Restarting app.")
         self.api.set_alive(False)
+        _thread.interrupt_main()  # API stopper aldri selv når kafka-konsumeren er ferdig, prøver dette.
 
     def create_consumer(self) -> KafkaConsumer:
         try:
