@@ -9,12 +9,12 @@ spec:
   image: {{image}}
   envFrom:
     - secret: pam-statistikk-job
-  schedule: "0 3 * * *"
+  # schedule: "0 3 * * *" TODO @v1adau(31.10.22) Uncomment
   backoffLimit: 5
   resources:
     limits:
-      cpu: "200m"
-      memory: "256Mi"
+      cpu: "2000m"
+      memory: "8Gi"
   gcp:
     permissions:
     - resource:
@@ -22,7 +22,7 @@ spec:
         kind: Project
       role: roles/cloudsql.client
     buckets:
-      - name: pam-statistikk
+      - name: {{ bucket_name }}
         premission: READ
 
 ---

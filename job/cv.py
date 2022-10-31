@@ -9,9 +9,17 @@ logger = get_logger(__name__)
 
 
 def _read_from_db(con: Engine):
-    query = "SELECT * FROM cv"
-    query_result = pd.read_sql(query, con)
-    return query_result
+    logger.info("Fetching data from DB")
+
+    chunks = []
+    index = 1
+    for chunk in pd.read_sql("SELECT * FROM cv", con, chunksize=100000):
+        logger.info(f"Got chunk {index}")
+        chunks.append(chunk)
+        index += 1
+
+    logger.info("Finished fetching data from DB")
+    return pd.concat(chunks, ignore_index=True)
 
 
 def _get_dummies(enums):
@@ -80,7 +88,7 @@ def _list_to_file(name: str, dataframe: pd.DataFrame, directory: str):
                 else:
                     new_list.append({"aktorid": aktorid, name: value})
             except Exception as e:
-                logger.info(f"Value: {value} - ERROR: {e}")
+                logger.info(f"ERROR in list_to_file: {e}")
 
     new_df = pd.DataFrame(data=new_list)
     logger.info(f"{name} er ferdig formattert. Klargjør skriving til GCP-bucket")

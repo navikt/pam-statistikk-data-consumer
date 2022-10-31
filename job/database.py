@@ -32,5 +32,5 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     pool = sqlalchemy.create_engine(
         "postgresql+pg8000://",
         creator=getconn,
-    )
+    ).execution_options(stream_results=True)
     return pool
