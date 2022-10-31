@@ -8,20 +8,6 @@ from logger import get_logger
 logger = get_logger(__name__)
 
 
-def _read_from_db(con: Engine):
-    logger.info("Fetching data from DB")
-
-    chunks = []
-    index = 1
-    for chunk in pd.read_sql("SELECT * FROM cv", con, chunksize=100000):
-        logger.info(f"Got chunk {index}")
-        chunks.append(chunk)
-        index += 1
-
-    logger.info("Finished fetching data from DB")
-    return pd.concat(chunks, ignore_index=True)
-
-
 def _get_dummies(enums):
     dummies = {}
     for category, category_enums in enums.items():
@@ -52,7 +38,7 @@ def _get_conditions(jobwishes: dict):
     return _get_dummies(jobwishes_enums)
 
 
-def _jobwishes_to_file(dataframe: pd.DataFrame):
+def _jobwishes_to_file(dataframe: pd.DataFrame, chunk_index: int):
     formatted_lists = defaultdict(list)
     for _, row in dataframe.iterrows():  # pr person
         jobwishes = row["jobwishes"]
@@ -67,15 +53,15 @@ def _jobwishes_to_file(dataframe: pd.DataFrame):
         conditions = _get_conditions(jobwishes=jobwishes)
         formatted_lists["conditions"].append({"aktorid": aktorid, **conditions})
 
-    for category, alternatives in formatted_lists.items(): # loc, occup & conditions
+    for category, alternatives in formatted_lists.items():  # loc, occup & conditions
         frame = pd.DataFrame(alternatives)
         if category == "conditions":
-            write_to_gcp("jobwishes/conditions", frame)
+            write_to_gcp("jobwishes/conditions", frame, chunk_index)
         else:
-            _list_to_file(category, frame, "jobwishes")
+            _list_to_file(category, frame, "jobwishes", chunk_index)
 
 
-def _list_to_file(name: str, dataframe: pd.DataFrame, directory: str):
+def _list_to_file(name: str, dataframe: pd.DataFrame, directory: str, chunk_index: int):
     new_list = []
     for index, row in dataframe.iterrows():
         values = row[name]
@@ -92,10 +78,10 @@ def _list_to_file(name: str, dataframe: pd.DataFrame, directory: str):
 
     new_df = pd.DataFrame(data=new_list)
     logger.info(f"{name} er ferdig formattert. Klargjør skriving til GCP-bucket")
-    write_to_gcp(f"{directory}/{name}", new_df)
+    write_to_gcp(f"{directory}/{name}", new_df, chunk_index)
 
 
-def _write_to_files(df):
+def _write_to_files(df, chunk_index):
     personalia = [
         "aktorid",  # type'str'
         "foedselsdato",  # type'datetime.date'
@@ -108,28 +94,36 @@ def _write_to_files(df):
         "manuell",  # type'str'
         "erunderoppfolging",  # type'str'
     ]
-    write_to_gcp("cv/personalia", df[personalia])
+    write_to_gcp("cv/personalia", df[personalia], chunk_index)
     logger.info("Ferdig med å skrive peronalia til fil")
 
     lists = [
-        "otherexperience", # type'list'
-        "workexperience", # type'list'
-        "courses", # type'list'
-        "certificates", # type'list'
-        "languages", # type'list'
-        "education", # type'list'
-        "vocationalcertificates", # type'list'
-        "authorizations", # type'list'
-        "driverslicenses", # type'list'
-        "skills", # type'list'
+        "otherexperience",  # type'list'
+        "workexperience",  # type'list'
+        "courses",  # type'list'
+        "certificates",  # type'list'
+        "languages",  # type'list'
+        "education",  # type'list'
+        "vocationalcertificates",  # type'list'
+        "authorizations",  # type'list'
+        "driverslicenses",  # type'list'
+        "skills",  # type'list'
     ]
     for name in lists:
         logger.info(f"Formatterer {name} dataframe for skriving")
-        _list_to_file(name, df[["aktorid", name]], directory="cv")
+        _list_to_file(name, df[["aktorid", name]], directory="cv", chunk_index=chunk_index)
 
-    _jobwishes_to_file(df[["aktorid", "jobwishes"]])
+    _jobwishes_to_file(df[["aktorid", "jobwishes"]], chunk_index)
 
 
 def read_write_cv(con: Engine):
-    df = _read_from_db(con)
-    _write_to_files(df)
+    logger.info("Fetching data from DB")
+
+    index = 1
+    for chunk in pd.read_sql("SELECT * FROM cv", con, chunksize=100000):
+        logger.info(f"Read chunk #{index} - Processing")
+        _write_to_files(chunk, index)
+        logger.info(f"Finished processing chunk #{index}")
+        index += 1
+
+    logger.info(f"Finished processing {index} chunks")

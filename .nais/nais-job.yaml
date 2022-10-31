@@ -9,6 +9,9 @@ spec:
   image: {{image}}
   envFrom:
     - secret: pam-statistikk-job
+  env:
+    - name: BUCKET
+      value: {{ bucket_name }}
   # schedule: "0 3 * * *" TODO @v1adau(31.10.22) Uncomment
   backoffLimit: 5
   resources:

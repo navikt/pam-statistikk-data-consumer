@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 import pandas as pd
 
@@ -14,17 +15,11 @@ def create_client() -> Client:
     return client
 
 
-def publish_dataframe_as_file(client: Client, bucket_name: str, df: pd.DataFrame, file_name: str):
-    # opretter mappe med dagens dato om den ikke eksisterer fra før
-    # putter filen i mappen
+def write_to_gcp(file_name: str, df: pd.DataFrame, chunk_index: int):
+    client = create_client()
+    bucket_name = os.getenv("BUCKET")
     logger.info("publishing file: " + file_name)
     df_as_string = df.to_csv(sep=';', index=False)
     bucket = client.bucket(bucket_name=bucket_name)
-    bucket.blob(f"{directory}/{file_name}.csv").upload_from_string(df_as_string)
+    bucket.blob(f"{directory}/{file_name}_{chunk_index}.csv").upload_from_string(df_as_string)
     logger.info("publish success")
-
-
-def write_to_gcp(file_name: str, df: pd.DataFrame):
-    client = create_client()
-    bucket_name = "pam-statistikk"
-    publish_dataframe_as_file(client=client, bucket_name=bucket_name, df=df, file_name=file_name)
