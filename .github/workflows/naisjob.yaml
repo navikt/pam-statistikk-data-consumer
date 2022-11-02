@@ -3,7 +3,6 @@ on:
   push:
     branches:
     - "main"
-    - "prod-deploy"
     paths:
       - 'job/**'
       - '.nais/nais-job.yaml'
@@ -29,20 +28,20 @@ jobs:
         "password": "${{ secrets.GITHUB_TOKEN }}"
     - name: "Build and push the Docker image"
       run: "docker build . -f job/Dockerfile --pull --tag ${JOB_IMAGE} && docker push ${JOB_IMAGE}"
-#  "deployAppToDev": TODO @v1adau(31.10.22) Uncomment
-#    name: "Deploy job to dev"
-#    needs: "build"
-#    runs-on: "ubuntu-18.04"
-#    steps:
-#    - uses: "actions/checkout@v3"
-#    - name: "Deploy to DEV"
-#      uses: "nais/deploy/actions/deploy@v1"
-#      env:
-#        APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-#        CLUSTER: "dev-gcp"
-#        RESOURCE: ".nais/nais-job.yaml"
-#        VARS: ".nais/dev.yaml"
-#        VAR: image=${{ env.JOB_IMAGE }}
+  "deployAppToDev":
+    name: "Deploy job to dev"
+    needs: "build"
+    runs-on: "ubuntu-18.04"
+    steps:
+    - uses: "actions/checkout@v3"
+    - name: "Deploy to DEV"
+      uses: "nais/deploy/actions/deploy@v1"
+      env:
+        APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+        CLUSTER: "dev-gcp"
+        RESOURCE: ".nais/nais-job.yaml"
+        VARS: ".nais/dev.yaml"
+        VAR: image=${{ env.JOB_IMAGE }}
   "deployAppToProd":
     name: "Deploy job to prod"
     needs: "build"
