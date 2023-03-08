@@ -41,10 +41,10 @@ spec:
   - name: pam-statistikk-nais-job-alert
     rules:
     - alert: pam-statistikk-nais-job Naisjob feiler
-      summary: "Denne jobben kjører kun en gang om dagen og er viktig for statistikk"
       expr: 'kube_job_status_failed{job_name=\"pam-statistikk-nais-job\"} > 0'
       for: 2m
       annotations:
+        summary: "Denne jobben kjører kun en gang om dagen og er viktig for statistikk"
         consequence: Naisjob feiler, kan gi feil i statistikken
         action: "´kubectl describe pod pam-statistikk-nais-job -n teampam´ \
                    \ For pod laget av job, kjør ´kubectl logs <podname>´
@@ -56,10 +56,10 @@ spec:
         namespace: teampam
         severity: danger
     - alert: pam-statistikk-nais-job Naisjob Kjørte ikke
-      summary: Naisjob pam-statistikk-nais-job har mulig ikke kjørt i riktig tidsrom!
       expr: 'time() - max(kube_job_status_completion_time{job_name=~"pam-statistikk-nais-job></naisjob-navn>.+"}) > 90000'
       for: 1m
       annotations:
+        summary: Naisjob pam-statistikk-nais-job har mulig ikke kjørt i riktig tidsrom!
         consequence: Naisjob kjørte ikke, kan gi feil i statistikken
         action: "Se logger på https://logs.adeo.no -> søk etter `pod:pam-statistikk-nais-job> AND namespace:teampam`"
       labels:
