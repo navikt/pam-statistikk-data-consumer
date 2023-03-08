@@ -29,37 +29,38 @@ spec:
         premission: READ
 
 ---
-
-apiVersion: "nais.io/v1"
-kind: "Alert"
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
 metadata:
   name: "pam-statistikk-nais-job-alert"
   namespace: "teampam"
   labels:
     "team": "teampam"
-    "start.nais.io/created-by": "me"
 spec:
-  receivers:
-    slack:
-      channel: "arbeidsplassen-data"
-      prependText: "<!here> | "
-      send_resolved: true
-      username: "PAM Alert-o-Bot"
-  alerts:
-  - alert: "pam-statistikk-nais-job Naisjob feiler"
-    description: "Denne jobben kjører kun en gang om dagen og er viktig for statistikk"
-    expr: "kube_job_status_failed{job_name=\"pam-statistikk-nais-job\"} > 0"
-    for: "2m"
-    action: "´kubectl describe pod pam-statistikk-nais-job -n teampam´ \
-      \ For pod laget av job, kjør ´kubectl logs <podname>´
-      \ Se logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-nais-job\"` "
-    documentation: "https://github.com/navikt/pam-statistikk-data-consumer"
-    sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
-    severity: "danger"
-
-  - alert: Naisjob Kjørte ikke
-    description: Naisjob pam-statistikk-nais-job har mulig ikke kjørt i riktig tidsrom!
-    expr: 'time() - max(kube_job_status_completion_time{job_name=~"pam-statistikk-nais-job></naisjob-navn>.+"}) > 90000'
-    for: 1m
-    action: "Se logger på https://logs.adeo.no -> søk etter `pod:pam-statistikk-nais-job> AND namespace:teampam`"
-    severity: warning
+  groups:
+  - name: pam-statistikk-nais-job-alert
+    rules:
+    - alert: pam-statistikk-nais-job Naisjob feiler
+      summary: "Denne jobben kjører kun en gang om dagen og er viktig for statistikk"
+      expr: 'kube_job_status_failed{job_name=\"pam-statistikk-nais-job\"} > 0'
+      for: 2m
+      annotations:
+        consequence: Naisjob feiler, kan gi feil i statistikken
+        action: "´kubectl describe pod pam-statistikk-nais-job -n teampam´ \
+                   \ For pod laget av job, kjør ´kubectl logs <podname>´
+                   \ Se logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-nais-job\"` "
+        documentation: "https://github.com/navikt/pam-statistikk-data-consumer"
+        sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
+      labels:
+        namespace: teampam
+        severity: danger
+    - alert: pam-statistikk-nais-job Naisjob Kjørte ikke
+      summary: Naisjob pam-statistikk-nais-job har mulig ikke kjørt i riktig tidsrom!
+      expr: 'time() - max(kube_job_status_completion_time{job_name=~"pam-statistikk-nais-job></naisjob-navn>.+"}) > 90000'
+      for: 1m
+      annotations:
+        consequence: Naisjob kjørte ikke, kan gi feil i statistikken
+        action: "Se logger på https://logs.adeo.no -> søk etter `pod:pam-statistikk-nais-job> AND namespace:teampam`"
+      labels:
+        namespace: teampam
+        severity: warning
