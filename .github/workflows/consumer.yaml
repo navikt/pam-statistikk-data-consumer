@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - "main"
+    - "endre_alerts"
     paths:
       - 'app/**'
       - '.nais/nais-application.yaml'

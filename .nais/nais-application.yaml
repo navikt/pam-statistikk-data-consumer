@@ -40,30 +40,25 @@ spec:
               - name: statistikk-read-user
 
 ---
-
-apiVersion: "nais.io/v1"
-kind: "Alert"
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
 metadata:
-  name: "pam-statistikk-data-consumer-alert"
-  namespace: "teampam"
+  name: pam-statistikk-data-consumer-alert
+  namespace: teampam
   labels:
-    "team": "teampam"
-    "start.nais.io/created-by": "me"
+    team: teampam
 spec:
-  receivers:
-    slack:
-      channel: "arbeidsplassen-data"
-      prependText: "<!here> | "
-      send_resolved: true
-      username: "PAM Alert-o-Bot"
-  alerts:
-    - alert: "ContainerKilled"
-      expr: "time() - container_last_seen{container=\"pam-statistikk-data-consumer\"} > 60"
-      for: "5m"
-      summary: "Container killed (instance {{ $labels.instance }})"
-      description: "Ingen kontainere ble funnet for applikasjonen pam-statistikk-data-consumer"
-      documentation: "https://github.com/navikt/pam-statistikk-data-consumer"
-      action: "logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-data-consumer\"` "
-      sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
-      severity: "warning"
-
+  groups:
+  - name: pam-statistikk-data-consumer-alert
+    rules:
+    - alert: ContainerKilled
+      expr: 'time() - container_last_seen{container=\"pam-statistikk-data-consumer\"} > 60'
+      for: 5m
+      annotations:
+        consequence: Ingen containere for applikasjonen pam-statistikk-data-consumer finnes, kan ødelegge for statistikken!
+        action: "logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-data-consumer\"` "
+        sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
+        summary: "Container killed (instance {{ $labels.instance }})"
+      labels:
+        namespace: teampam
+        severity: warning
