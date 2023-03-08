@@ -49,8 +49,9 @@ spec:
         action: "´kubectl describe pod pam-statistikk-nais-job -n teampam´ \
                    \ For pod laget av job, kjør ´kubectl logs <podname>´
                    \ Se logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-nais-job\"` "
-        documentation: "https://github.com/navikt/pam-statistikk-data-consumer"
-        sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
+#        documentation: "https://github.com/navikt/pam-statistikk-data-consumer"
+#        sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
+        message: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
       labels:
         namespace: teampam
         severity: danger

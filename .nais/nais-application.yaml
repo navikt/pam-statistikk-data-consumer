@@ -57,7 +57,7 @@ spec:
       annotations:
         consequence: Ingen containere for applikasjonen pam-statistikk-data-consumer finnes, kan ødelegge for statistikken!
         action: "logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-data-consumer\"` "
-        sla: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
+        message: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
         summary: "Container killed (instance {{ $labels.instance }})"
       labels:
         namespace: teampam
