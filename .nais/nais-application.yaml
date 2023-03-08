@@ -38,27 +38,3 @@ spec:
             envVarPrefix: DB
             users:
               - name: statistikk-read-user
-
----
-apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
-metadata:
-  name: pam-statistikk-data-consumer-alert
-  namespace: teampam
-  labels:
-    team: teampam
-spec:
-  groups:
-  - name: pam-statistikk-data-consumer-alert
-    rules:
-    - alert: ContainerKilled
-      expr: 'time() - container_last_seen{container=\"pam-statistikk-data-consumer\"} > 60'
-      for: 5m
-      annotations:
-        consequence: Ingen containere for applikasjonen pam-statistikk-data-consumer finnes, kan ødelegge for statistikken!
-        action: "logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-data-consumer\"` "
-        message: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
-        summary: "Container killed (instance {{ $labels.instance }})"
-      labels:
-        namespace: teampam
-        severity: warning
