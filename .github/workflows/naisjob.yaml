@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - "main"
+    - "endre_alerts"
     paths:
       - 'job/**'
       - '.nais/nais-job.yaml'
