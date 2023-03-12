@@ -10,13 +10,13 @@ spec:
   - name: pam-statistikk-data-consumer-alert
     rules:
     - alert: ContainerKilled
-      expr: 'time() - container_last_seen{container=\"pam-statistikk-data-consumer\"} > 60'
+      expr: time() - container_last_seen{container="pam-statistikk-data-consumer"} > 60
       for: 5m
       annotations:
         consequence: Ingen containere for applikasjonen pam-statistikk-data-consumer finnes, kan ødelegge for statistikken!
-        action: "logger på https://logs.adeo.no -> søk etter `application: \"pam-statistikk-data-consumer\"` "
+        action: "logger på https://logs.adeo.no -> søk etter `application: pam-statistikk-data-consumer` "
         message: "Må gjøres ASAP! Kan ødelegge for statistikk om denne jobben ikke kjører minst en gang daglig."
-        summary: "Container killed (instance {{ $labels.instance }})"
+        summary: "Container killed (instance \{{ $labels.instance }})"
       labels:
         namespace: teampam
         severity: warning
@@ -25,10 +25,10 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: "pam-statistikk-nais-job-alert"
-  namespace: "teampam"
+  name: pam-statistikk-nais-job-alert
+  namespace: teampam
   labels:
-    team: "teampam"
+    team: teampam
 spec:
   groups:
   - name: pam-statistikk-nais-job-alert
