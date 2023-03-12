@@ -34,7 +34,7 @@ spec:
   - name: pam-statistikk-nais-job-alert
     rules:
     - alert: pam-statistikk-nais-job Naisjob feiler
-      expr: 'kube_job_status_failed{job_name=\"pam-statistikk-nais-job\"} > 0'
+      expr: 'kube_job_status_failed{job_name="pam-statistikk-nais-job"} > 0'
       for: 2m
       annotations:
         summary: "Denne jobben kjører kun en gang om dagen og er viktig for statistikk"
