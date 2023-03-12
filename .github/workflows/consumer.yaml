@@ -42,17 +42,17 @@ jobs:
         RESOURCE: ".nais/nais-application.yaml"
         VARS: ".nais/dev.yaml"
         VAR: image=${{ env.CONSUMER_IMAGE }}
-#  "deployAppToProd":
-#    name: "Deploy consumer-application to prod"
-#    needs: ["build", "deployAppToDev"]
-#    runs-on: "ubuntu-18.04"
-#    steps:
-#    - uses: "actions/checkout@v3"
-#    - name: "Deploy to PROD"
-#      uses: "nais/deploy/actions/deploy@v1"
-#      env:
-#        APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-#        CLUSTER: "prod-gcp"
-#        RESOURCE: ".nais/nais-application.yaml"
-#        VARS: ".nais/prod.yaml"
-#        VAR: image=${{ env.CONSUMER_IMAGE }}
+  "deployAppToProd":
+    name: "Deploy consumer-application to prod"
+    needs: ["build", "deployAppToDev"]
+    runs-on: "ubuntu-18.04"
+    steps:
+    - uses: "actions/checkout@v3"
+    - name: "Deploy to PROD"
+      uses: "nais/deploy/actions/deploy@v1"
+      env:
+        APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+        CLUSTER: "prod-gcp"
+        RESOURCE: ".nais/nais-application.yaml"
+        VARS: ".nais/prod.yaml"
+        VAR: image=${{ env.CONSUMER_IMAGE }}
