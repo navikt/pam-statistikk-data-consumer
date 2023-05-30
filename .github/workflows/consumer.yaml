@@ -31,7 +31,7 @@ jobs:
   "deployAppToDev":
     name: "Deploy consumer-application to dev"
     needs: "build"
-    runs-on: "ubuntu-18.04"
+    runs-on: "ubuntu-latest"
     steps:
     - uses: "actions/checkout@v3"
     - name: "Deploy to DEV"
@@ -45,7 +45,7 @@ jobs:
   "deployAppToProd":
     name: "Deploy consumer-application to prod"
     needs: ["build", "deployAppToDev"]
-    runs-on: "ubuntu-18.04"
+    runs-on: "ubuntu-latest"
     steps:
     - uses: "actions/checkout@v3"
     - name: "Deploy to PROD"
