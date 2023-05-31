@@ -1,11 +1,9 @@
 import json
 import os
-from logger import init_app_logging, get_logger
 
 import pandas.io.sql as psql
+from logger import init_app_logging, get_logger
 from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine
-from sqlalchemy.sql import null
 from yoyo import read_migrations, get_backend
 
 init_app_logging()
@@ -24,20 +22,6 @@ def run_database_migrations():
         logger.info("Migrations applied")
 
 
-class DatabaseEngine:
-    def __init__(self, db_url: str):
-        self.db_url = db_url
-
-    def __enter__(self) -> Engine:
-        self.engine = create_engine(self.db_url)
-        logger.info('Opened connection to the database.')
-        return self.engine
-
-    def __exit__(self, exc_type, exc_value, tb):
-        self.engine.dispose()
-        logger.info('Closed connection to the database.')
-
-
 class Database:
     def __init__(self):
         db_url = os.getenv("DB_URL")
@@ -46,12 +30,12 @@ class Database:
         if "postgres://" in db_url:
             db_url = db_url.replace("postgres://", "postgresql://")
 
-        self.database_engine = DatabaseEngine(db_url)
+        self.connection_pool = create_engine(db_url, pool_size=1, max_overflow=1)
         self.database_name = db_name
 
     def execute_query(self, query: str, params=None):
         logger.info(f'Executing query on {self.database_name}')
-        with self.database_engine as engine:
+        with self.connection_pool as engine:
             result = psql.execute(query, engine, params)
         return result
 
