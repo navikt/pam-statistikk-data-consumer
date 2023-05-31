@@ -35,8 +35,7 @@ class Database:
 
     def execute_query(self, query: str, params=None):
         logger.info(f'Executing query on {self.database_name}')
-        with self.connection_pool as engine:
-            result = psql.execute(query, engine, params)
+        result = psql.execute(query, engine, params)
         return result
 
     # Test func
