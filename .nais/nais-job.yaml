@@ -27,3 +27,9 @@ spec:
     buckets:
       - name: {{ bucket_name }}
         premission: READ
+  accessPolicy:
+    outbound:
+      external:
+        - host: www.googleapis.com
+        - host: storage.googleapis.com
+        - host: content.googleapis.com
