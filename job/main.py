@@ -13,5 +13,5 @@ def main():
 
 
 if __name__ == "__main__":
-    logger.info("Starter naisjob")
+    logger.info("Starter statistikk-jobb")
     main()
