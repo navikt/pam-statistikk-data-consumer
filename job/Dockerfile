@@ -1,4 +1,4 @@
-FROM navikt/python:3.8
+FROM ghcr.io/navikt/baseimages/python:3.11
 
 USER root
 
