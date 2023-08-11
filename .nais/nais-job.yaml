@@ -30,4 +30,11 @@ spec:
   accessPolicy:
     outbound:
       external:
+        - host: www.googleapis.com
+        - host: storage.googleapis.com
+        - host: content.googleapis.com
+        - host: private.googleapis.com
+        - host: cloudsql.googleapis.com
         - host: sql-component.googleapis.com
+        - host: sqladmin.googleapis.com
+        - host: 34.88.234.250
