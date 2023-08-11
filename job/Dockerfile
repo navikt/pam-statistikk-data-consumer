@@ -1,7 +1,6 @@
 FROM ghcr.io/navikt/baseimages/python:3.11
 
 USER root
-RUN apt-get update && apt-get upgrade openssl
 
 COPY ./job .
 
