@@ -27,3 +27,4 @@ spec:
     buckets:
       - name: {{ bucket_name }}
         premission: READ
+  webproxy: true
