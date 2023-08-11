@@ -17,6 +17,8 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     connector = Connector()
 
     def getconn() -> pg8000.dbapi.Connection:
+        print(f"DB_INSTANCE: {db_instance}")
+
         conn: pg8000.dbapi.Connection = connector.connect(
             db_instance,
             "pg8000",
