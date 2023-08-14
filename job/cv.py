@@ -126,4 +126,4 @@ def read_write_cv(con: Engine):
         logger.info(f"Finished processing chunk #{index}")
         index += 1
 
-    logger.info(f"Finished processing {index} chunks")
+    logger.info(f"Finished processing {index - 1} chunks")
