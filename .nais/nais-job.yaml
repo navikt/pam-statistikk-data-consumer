@@ -40,3 +40,4 @@ spec:
         - host: sqladmin.googleapis.com
         - host: googleapis.com
         - host: 34.88.234.250
+        - host: resourcemanager.cnrm.cloud.google.com
