@@ -120,7 +120,6 @@ def read_write_cv(con: Engine):
     logger.info("Fetching data from DB")
 
     index = 1
-    logger.info(f"Reading chunk #{index}"g)
     for chunk in pd.read_sql("SELECT * FROM cv", con, chunksize=100000):
         logger.info(f"Read chunk #{index} - Processing")
         _write_to_files(chunk, index)
