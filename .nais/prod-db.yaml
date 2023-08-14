@@ -6,8 +6,8 @@ metadata:
 spec:
   egress:
     - to:
-        - ipBlock:
-            cidr: 34.88.234.250/32
+      - ipBlock:
+          gcidr: 34.88.234.250/32
   podSelector:
     matchLabels:
       db: pam-statistikk-nais-job
