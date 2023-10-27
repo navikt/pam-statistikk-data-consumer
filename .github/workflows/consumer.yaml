@@ -32,6 +32,11 @@ jobs:
       run: "docker build . -f app/Dockerfile --pull --tag ${CONSUMER_IMAGE} && docker push ${CONSUMER_IMAGE}"
   "deployAppToDev":
     name: "Deploy consumer-application to dev"
+    permissions:
+      actions: read
+      contents: write
+      security-events: write
+      id-token: write
     needs: "build"
     runs-on: "ubuntu-latest"
     steps:
@@ -46,6 +51,8 @@ jobs:
         VAR: image=${{ env.CONSUMER_IMAGE }}
   "deployAppToProd":
     name: "Deploy consumer-application to prod"
+    permissions:
+      contents: write
     needs: ["build", "deployAppToDev"]
     runs-on: "ubuntu-latest"
     steps:
