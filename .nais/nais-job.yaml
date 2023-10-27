@@ -18,6 +18,8 @@ spec:
     limits:
       cpu: "2000m"
       memory: "8Gi"
+  prometheus:
+    enabled: true
   gcp:
     permissions:
     - resource:

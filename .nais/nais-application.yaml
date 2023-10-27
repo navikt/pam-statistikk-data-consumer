@@ -27,6 +27,8 @@ spec:
       memory: 512Mi
   kafka:
     pool: {{ kafka_pool }}
+  prometheus:
+    enabled: true
   gcp:
     sqlInstances:
       - type: POSTGRES_14
