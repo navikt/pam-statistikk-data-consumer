@@ -16,8 +16,7 @@ jobs:
   "build":
     name: "build consumer-application"
     permissions:
-      contents: write
-      actions: write
+      packages: write
     runs-on: "ubuntu-latest"
     steps:
     - uses: "actions/checkout@v2"
