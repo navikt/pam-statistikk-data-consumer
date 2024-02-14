@@ -29,6 +29,11 @@ spec:
     pool: {{ kafka_pool }}
   prometheus:
     enabled: true
+  observability:
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
   gcp:
     sqlInstances:
       - type: POSTGRES_14
