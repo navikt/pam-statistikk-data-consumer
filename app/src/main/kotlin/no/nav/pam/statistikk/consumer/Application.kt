@@ -27,7 +27,7 @@ val defaultObjectMapper: ObjectMapper =
         .enable(JsonGenerator.Feature.IGNORE_UNKNOWN)
 
 fun kjørFlywayMigreringer(dataSource: DataSource) {
-    Flyway.configure().loggers("slf4j").dataSource(dataSource).load().migrate()
+    Flyway.configure().loggers("slf4j").baselineOnMigrate(true).dataSource(dataSource).load().migrate()
 }
 
 fun main() {
