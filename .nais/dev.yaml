@@ -1,3 +1,5 @@
 "kafka_pool": "nav-dev"
 "bucket_name": "pam-statistikk"
 "cloudsql_db_tier": "db-g1-small"
+"consumer_group_id": "pam-statistikk-data-consumer-v1"
+"cv_endret_intern_topic": "teampam.cv-endret-intern-v3"
