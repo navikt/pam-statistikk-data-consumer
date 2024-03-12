@@ -4,6 +4,7 @@ on:
     branches:
     - main
     - feature/*
+    - kotlin-rewrite
     paths:
       - 'app/**'
       - '.nais/nais-application.yaml'
