@@ -5,7 +5,6 @@ import no.nav.pam.statistikk.consumer.config.TxContext
 import no.nav.pam.statistikk.consumer.config.TxTemplate
 import no.nav.pam.statistikk.consumer.dto.cv_og_jobb.JobwishesDBmodell.Companion.fromCvEndretInternJobwishesDto
 import no.nav.pam.statistikk.consumer.dto.meldinger.CvEndretInternDto
-import java.sql.Timestamp
 
 class CvRepository(private val objectMapper: ObjectMapper, private val txTemplate: TxTemplate) {
     fun upsertCv(cvMelding: CvEndretInternDto, txContext: TxContext? = null) =
