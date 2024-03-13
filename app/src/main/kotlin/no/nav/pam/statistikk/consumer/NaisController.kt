@@ -1,6 +1,5 @@
 package no.nav.pam.statistikk.consumer
 
-import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
 import io.javalin.http.HttpStatus
 import io.micrometer.prometheus.PrometheusMeterRegistry
