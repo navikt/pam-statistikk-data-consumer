@@ -4,24 +4,15 @@ import io.javalin.apibuilder.ApiBuilder.get
 import io.javalin.http.HttpStatus
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.exporter.common.TextFormat
-import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicInteger
 
 class NaisController(private val healthService: HealthService, private val prometheusMeterRegistry: PrometheusMeterRegistry) {
-    companion object {
-        private val logger = LoggerFactory.getLogger(NaisController::class.java)
-    }
-
     fun setupRoutes() {
         get("/internal/isReady") { it.status(200) }
         get("/internal/isAlive") {
-            if (healthService.isHealthy()) {
-                it.status(HttpStatus.OK)
-                logger.info("SVARER OK PÅ ISALIVE")
-            } else {
-                it.status(HttpStatus.SERVICE_UNAVAILABLE)
-                logger.warn("SVARER IKKE OK PÅ ISALIVE")
-            }
+            if (healthService.isHealthy()) it.status(HttpStatus.OK)
+            else it.status(HttpStatus.SERVICE_UNAVAILABLE)
+
         }
         get("/internal/prometheus") {
             it.contentType(TextFormat.CONTENT_TYPE_004).result(prometheusMeterRegistry.scrape())

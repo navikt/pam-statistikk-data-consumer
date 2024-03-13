@@ -64,11 +64,11 @@ class CvRepository(private val objectMapper: ObjectMapper, private val txTemplat
             }.use { statement ->
                 return@doInTransaction statement.executeUpdate()
             }
-        }
+        } > 0
 
     fun deleteCv(aktørId: String, txContext: TxContext? = null) = txTemplate.doInTransaction(txContext) { ctx ->
         ctx.connection().prepareStatement("DELETE FROM cv WHERE aktorid = ?")
             .apply { this.setString(1, aktørId) }
             .use { return@doInTransaction it.executeUpdate() }
-    }
+    } > 0
 }
