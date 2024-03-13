@@ -8,12 +8,12 @@ metadata:
 spec:
   image: {{image}}
   liveness:
-    path: "/isAlive"
+    path: "internal/isAlive"
     port: 8080
     initialDelay: 20
     timeout: 60
   readiness:
-    path: "/isReady"
+    path: "internal/isReady"
     port: 8080
     initialDelay: 20
     timeout: 60
