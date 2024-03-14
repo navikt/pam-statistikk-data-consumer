@@ -3,7 +3,7 @@ package no.nav.pam.statistikk.consumer
 import no.nav.pam.statistikk.consumer.config.TxContext
 import no.nav.pam.statistikk.consumer.config.TxTemplate
 import no.nav.pam.statistikk.consumer.dto.meldinger.CvEndretInternDto
-import no.nav.pam.statistikk.consumer.dto.meldinger.CvMeldingstype
+import no.nav.pam.statistikk.consumer.dto.meldinger.CvMeldingstype.SLETT
 import org.slf4j.LoggerFactory
 
 class CvService(private val cvRepository: CvRepository, private val txTemplate: TxTemplate) {
@@ -17,18 +17,19 @@ class CvService(private val cvRepository: CvRepository, private val txTemplate: 
 
     fun behandleCvEndretMeldinger(meldinger: List<CvEndretInternDto>) = txTemplate.doInTransaction { ctx ->
         var slettet = 0
+        var eksistererIkke = 0
         var endret = 0
         var feilet = 0
 
-        meldinger.forEach {
-            val slette = it.meldingstype == CvMeldingstype.SLETT
-            val success = if (slette) slettCv(it.aktorId, ctx) else lagreCv(it, ctx)
-
-            if (success) {
-                if (slette) slettet++ else endret++
-            } else feilet++
+        meldinger.forEach { cv ->
+            when (cv.meldingstype) {
+                SLETT -> handleOperation(slettCv(cv.aktorId, ctx), onSuccess = { slettet++ }, onFailure = { eksistererIkke++ })
+                else -> handleOperation(lagreCv(cv, ctx), onSuccess = { endret++ }, onFailure = { feilet++ })
+            }
         }
 
-        logger.info("Behandlet ${meldinger.size} meldinger - Endret: $endret - Slettet: $slettet - Feilet: $feilet")
+        logger.info("Behandlet ${meldinger.size} meldinger - Endret: $endret - Lagring feilet: $feilet - Slettet: $slettet - Slettet CV fantes ikke: $eksistererIkke")
     }
+
+    private fun handleOperation(isSuccess: Boolean, onSuccess: () -> Unit, onFailure: () -> Unit) = if (isSuccess) onSuccess() else onFailure()
 }
