@@ -14,7 +14,7 @@ class CvRepository(private val objectMapper: ObjectMapper, private val txTemplat
                     aktorid, foedselsdato, postnummer, kommunenr, synligforarbeidsgiver, synligforveileder, hascar, 
                     otherexperience, workexperience, courses, certificates, languages, education, vocationalcertificates, 
                     authorizations, driverslicenses, skills, jobwishes, fritattkandidatsok, manuell, erunderoppfolging
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?::json, ?::json, ?::json, ?::json, ?::json, ?::json, ?::json, ?::json, ?::json, ?::json, ?::json, ?, ?, ?)
                 ON CONFLICT (aktorid) DO UPDATE
                 SET foedselsdato = EXCLUDED.foedselsdato,
                     postnummer = EXCLUDED.postnummer,
