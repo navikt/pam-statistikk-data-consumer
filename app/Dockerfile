@@ -1,13 +1,5 @@
-FROM navikt/python:3.8
+FROM ghcr.io/navikt/baseimages/temurin:21
 
-USER root
-
-COPY ./app app
-
-WORKDIR app
-
-RUN pip3 install -r requirements.txt
-
-USER apprunner
-
-ENTRYPOINT ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+COPY app/build/libs/app-1.0-all.jar ./app.jar
+EXPOSE 8080
+ENV JAVA_OPTS="-XX:-OmitStackTraceInFastThrow -Xms256m -Xmx1536m"

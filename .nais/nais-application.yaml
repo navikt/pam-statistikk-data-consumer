@@ -8,12 +8,12 @@ metadata:
 spec:
   image: {{image}}
   liveness:
-    path: "/isalive"
+    path: "internal/isAlive"
     port: 8080
     initialDelay: 20
     timeout: 60
   readiness:
-    path: "/isready"
+    path: "internal/isReady"
     port: 8080
     initialDelay: 20
     timeout: 60
@@ -34,6 +34,11 @@ spec:
       destinations:
         - id: loki
         - id: elastic
+  env:
+    - name: CV_ENDRET_INTERN_TOPIC
+      value: {{cv_endret_intern_topic}}
+    - name: CONSUMER_GROUP_ID
+      value: {{consumer_group_id}}
   gcp:
     sqlInstances:
       - type: POSTGRES_14

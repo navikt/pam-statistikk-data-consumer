@@ -1,0 +1,30 @@
+name: "Build and deploy statistikk-data-consumer til dev"
+on:
+  push:
+    branches:
+    - main
+    - feature/*
+    paths:
+      - 'app/**'
+      - '.nais/nais-application.yaml'
+      - '.nais/dev.yaml'
+      - '.nais/prod.yaml'
+      - '.github/workflows/deploy-dev-consumer.yaml'
+
+jobs:
+  call-workflow:
+    uses: navikt/pam-deploy/.github/workflows/deploy-dev.yml@v7
+    permissions:
+      actions: read
+      contents: write
+      security-events: write
+      id-token: write
+    with:
+      JAVA_VERSION: 21
+      BUILD_CACHE: gradle
+      NAIS_RESOURCE: .nais/nais-application.yaml
+      NAIS_VARS: .nais/dev.yaml
+      WORKING_DIRECTORY: ./app/
+      SKIP_DRAFT_RELEASE: ${{ github.ref_name != 'main' }}
+    secrets:
+      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
