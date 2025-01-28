@@ -63,18 +63,23 @@ def _jobwishes_to_file(dataframe: pd.DataFrame, chunk_index: int):
 
 def _list_to_file(name: str, dataframe: pd.DataFrame, directory: str, chunk_index: int):
     new_list = []
-    for index, row in dataframe.iterrows():
-        values = row[name]
-        aktorid = row["aktorid"]
 
-        for value in values:
-            try:
-                if type(value) in (list, dict):
-                    new_list.append({"aktorid": aktorid, **value})
-                else:
-                    new_list.append({"aktorid": aktorid, name: value})
-            except Exception as e:
-                logger.info(f"ERROR in list_to_file: {e}")
+    try:
+        for index, row in dataframe.iterrows():
+            values = row[name]
+            aktorid = row["aktorid"]
+
+            for value in values:
+                try:
+                    if type(value) in (list, dict):
+                        new_list.append({"aktorid": aktorid, **value})
+                    else:
+                        new_list.append({"aktorid": aktorid, name: value})
+                except Exception as e:
+                    logger.error(f"ERROR in list_to_file inner for field {name}: {e}")
+    except Exception as e:
+        logger.error(f"ERROR in list_to_file outer for field {name}: {e}")
+        return
 
     new_df = pd.DataFrame(data=new_list)
     logger.info(f"{name} er ferdig formattert. Klargjør skriving til GCP-bucket")
