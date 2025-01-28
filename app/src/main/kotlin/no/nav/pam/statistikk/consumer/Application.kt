@@ -16,6 +16,8 @@ import no.nav.pam.statistikk.consumer.kafka.KafkaConfig
 import no.nav.pam.statistikk.consumer.kafka.KafkaCvEndretListener
 import no.nav.pam.statistikk.consumer.kafka.variable
 import org.flywaydb.core.Flyway
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import java.util.*
 import javax.sql.DataSource
@@ -29,6 +31,8 @@ val defaultObjectMapper: ObjectMapper =
 fun kjørFlywayMigreringer(dataSource: DataSource) {
     Flyway.configure().loggers("slf4j").baselineOnMigrate(true).dataSource(dataSource).load().migrate()
 }
+
+val logger: Logger = LoggerFactory.getLogger(CvService::class.java)
 
 fun main() {
     val env = System.getenv()
@@ -58,4 +62,5 @@ fun main() {
 
     javalin.start()
     kafkaCvEndretListener.startListener()
+    logger.info("Startet javalin og listeners")
 }
