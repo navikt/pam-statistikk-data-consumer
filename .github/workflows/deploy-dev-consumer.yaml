@@ -26,5 +26,6 @@ jobs:
       NAIS_VARS: .nais/dev.yaml
       WORKING_DIRECTORY: ./app/
       SKIP_DRAFT_RELEASE: ${{ github.ref_name != 'main' }}
+      CODEQL_ENABLED: false # Kjører egen codeql action pga flere språk
     secrets:
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
