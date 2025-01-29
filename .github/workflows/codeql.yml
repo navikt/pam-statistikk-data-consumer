@@ -39,7 +39,8 @@ jobs:
       - name: Build and test
         if: matrix.language == 'java'
         run: |
-          ./app/build.sh
+          cd app
+          ./build.sh
         env:
           READER_TOKEN: ${{ secrets.READER_TOKEN }}
       - name: Perform CodeQL analysis
