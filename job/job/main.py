@@ -7,9 +7,11 @@ logger = get_logger(__name__)
 
 
 def main():
-    connection = connect_with_connector()
-    read_write_cv(con=connection)
-    #read_write_stilling
+    try:
+        connection = connect_with_connector()
+        read_write_cv(con=connection)
+    except Exception as e:
+        logger.error(f"Error during run: {e}")
 
 
 if __name__ == "__main__":
