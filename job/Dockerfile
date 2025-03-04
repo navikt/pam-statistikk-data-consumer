@@ -15,4 +15,4 @@ FROM gcr.io/distroless/python3 AS runner
 COPY --from=builder /job/python-packages /job/python-packages
 ENV PYTHONPATH="/job:/job/python-packages"
 COPY ./job .
-CMD ["main.py"]
+CMD ["job/main.py"]
