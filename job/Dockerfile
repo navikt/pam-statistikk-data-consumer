@@ -4,7 +4,7 @@ WORKDIR /job/
 
 # Install packages to a specific directory instead of using venv
 RUN pip install --upgrade pip setuptools
-COPY ./requirements.txt /job/requirements.txt
+COPY ./job/requirements.txt /job/requirements.txt
 
 # Install packages to a separate directory without pip/setuptools
 RUN pip install --target=/job/python-packages -r requirements.txt
