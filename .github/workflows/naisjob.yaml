@@ -26,7 +26,7 @@ jobs:
       with:
         team: teampam
         push_image: true
-        docker_context: ./job
+        dockerfile: job/Dockerfile
     - name: "Deploy to DEV"
       uses: nais/deploy/actions/deploy@v2
       env:
