@@ -7,61 +7,39 @@ on:
       - 'job/**'
       - '.nais/nais-job.yaml'
       - '.github/workflows/naisjob.yaml'
-
-env:
-  "JOB_IMAGE": "ghcr.io/${{ github.repository }}-job:${{ github.sha }}"
 jobs:
-  "build":
-    name: "build job"
+  build_and_deploy:
     permissions:
-      packages: write
-    runs-on: "ubuntu-latest"
+      contents: read
+      id-token: write
+      actions: read
+    name: Build and deploy job
+    runs-on: ubuntu-latest
     steps:
-    - uses: "actions/checkout@v2"
-    - name: "setup python"
-      uses: "actions/setup-python@v2"
+
+    - uses: actions/checkout@v4
+    - name: setup python
+      uses: actions/setup-python@v5
       with:
         "python-version": "3.x"
-    - name: "Login to GitHub Docker Registry"
-      uses: "docker/login-action@v2"
+    - uses: nais/docker-build-push@v0
+      id: docker-push
       with:
-        "registry": "ghcr.io"
-        "username": "${{ github.actor }}"
-        "password": "${{ secrets.GITHUB_TOKEN }}"
-    - name: "Build and push the Docker image"
-      run: "docker build . -f job/Dockerfile --pull --tag ${JOB_IMAGE} && docker push ${JOB_IMAGE}"
-  "deployAppToDev":
-    name: "Deploy job to dev"
-    permissions:
-      actions: read
-      contents: write
-      security-events: write
-      id-token: write
-    needs: "build"
-    runs-on: "ubuntu-latest"
-    steps:
-    - uses: "actions/checkout@v3"
+        team: teampam
+        push_image: true
     - name: "Deploy to DEV"
-      uses: "nais/deploy/actions/deploy@v1"
+      uses: nais/deploy/actions/deploy@v2
       env:
-        APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-        CLUSTER: "dev-gcp"
+        CLUSTER: dev-gcp
         RESOURCE: ".nais/nais-job.yaml,.nais/dev-db.yaml"
         VARS: ".nais/dev.yaml"
-        VAR: image=${{ env.JOB_IMAGE }}
-  "deployAppToProd":
-    name: "Deploy job to prod"
-    permissions:
-      contents: write
-    needs: "build"
-    runs-on: "ubuntu-latest"
-    steps:
-    - uses: "actions/checkout@v3"
+        IMAGE: ${{ steps.docker-push.outputs.image }}
+        TELEMETRY: ${{ steps.docker-push.outputs.telemetry }}
     - name: "Deploy to PROD"
-      uses: "nais/deploy/actions/deploy@v1"
+      uses: nais/deploy/actions/deploy@v2
       env:
-        APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-        CLUSTER: "prod-gcp"
+        CLUSTER: prod-gcp
         RESOURCE: ".nais/nais-job.yaml,.nais/prod-db.yaml"
         VARS: ".nais/prod.yaml"
-        VAR: image=${{ env.JOB_IMAGE }}
+        IMAGE: ${{ steps.docker-push.outputs.image }}
+        TELEMETRY: ${{ steps.docker-push.outputs.telemetry }}
