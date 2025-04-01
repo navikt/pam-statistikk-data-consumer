@@ -16,7 +16,6 @@ jobs:
     name: Build and deploy job
     runs-on: ubuntu-latest
     steps:
-
     - uses: actions/checkout@v4
     - name: setup python
       uses: actions/setup-python@v5
@@ -27,6 +26,7 @@ jobs:
       with:
         team: teampam
         push_image: true
+        docker_context: ./job
     - name: "Deploy to DEV"
       uses: nais/deploy/actions/deploy@v2
       env:
