@@ -47,7 +47,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.5.3")
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 
-    implementation("org.apache.kafka:kafka-clients:3.7.1")
+    implementation("org.apache.kafka:kafka-clients:3.9.1")
 
     implementation("org.postgresql:postgresql:42.7.2")
     implementation("com.zaxxer:HikariCP:5.1.0")
