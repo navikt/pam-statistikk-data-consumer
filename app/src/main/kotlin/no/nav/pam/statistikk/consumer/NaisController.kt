@@ -2,11 +2,13 @@ package no.nav.pam.statistikk.consumer
 
 import io.javalin.apibuilder.ApiBuilder.get
 import io.javalin.http.HttpStatus
-import io.micrometer.prometheus.PrometheusMeterRegistry
-import io.prometheus.client.exporter.common.TextFormat
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import java.util.concurrent.atomic.AtomicInteger
 
-class NaisController(private val healthService: HealthService, private val prometheusMeterRegistry: PrometheusMeterRegistry) {
+class NaisController(
+    private val healthService: HealthService,
+    private val prometheusMeterRegistry: PrometheusMeterRegistry
+) {
     fun setupRoutes() {
         get("/internal/isReady") { it.status(200) }
         get("/internal/isAlive") {
@@ -15,7 +17,7 @@ class NaisController(private val healthService: HealthService, private val prome
 
         }
         get("/internal/prometheus") {
-            it.contentType(TextFormat.CONTENT_TYPE_004).result(prometheusMeterRegistry.scrape())
+            it.contentType("text/plain; version=0.0.4; charset=utf-8").result(prometheusMeterRegistry.scrape())
         }
     }
 }

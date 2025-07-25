@@ -3,10 +3,8 @@ package no.nav.pam.statistikk.consumer.config
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import com.zaxxer.hikari.metrics.prometheus.PrometheusMetricsTrackerFactory
-import io.prometheus.client.CollectorRegistry
 
-class DatabaseConfig(env: Map<String, String>,
-                     private val collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry) {
+class DatabaseConfig(env: Map<String, String>) {
     private val host = env.variable("DB_HOST")
     private val port = env.variable("DB_PORT")
     private val database = env.variable("DB_DATABASE")
@@ -21,7 +19,7 @@ class DatabaseConfig(env: Map<String, String>,
         initializationFailTimeout = 5000
         username = user
         password = pw
-        metricsTrackerFactory = PrometheusMetricsTrackerFactory(collectorRegistry)
+        metricsTrackerFactory = PrometheusMetricsTrackerFactory()
         validate()
     }.let(::HikariDataSource)
 

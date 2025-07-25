@@ -8,8 +8,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.javalin.Javalin
 import io.javalin.micrometer.MicrometerPlugin
-import io.micrometer.prometheus.PrometheusConfig
-import io.micrometer.prometheus.PrometheusMeterRegistry
+import io.micrometer.prometheusmetrics.PrometheusConfig
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pam.statistikk.consumer.config.DatabaseConfig
 import no.nav.pam.statistikk.consumer.config.TxTemplate
 import no.nav.pam.statistikk.consumer.kafka.KafkaConfig
