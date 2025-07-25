@@ -2,7 +2,6 @@ package no.nav.pam.statistikk.consumer.config
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import com.zaxxer.hikari.metrics.prometheus.PrometheusMetricsTrackerFactory
 
 class DatabaseConfig(env: Map<String, String>) {
     private val host = env.variable("DB_HOST")
@@ -19,7 +18,6 @@ class DatabaseConfig(env: Map<String, String>) {
         initializationFailTimeout = 5000
         username = user
         password = pw
-        metricsTrackerFactory = PrometheusMetricsTrackerFactory()
         validate()
     }.let(::HikariDataSource)
 
