@@ -35,10 +35,10 @@ kotlin {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("io.javalin:javalin:6.1.3")
-    implementation("io.javalin:javalin-micrometer:6.1.3")
-    implementation("io.micrometer:micrometer-core:1.12.3")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.12.3")
+    implementation("io.javalin:javalin:6.7.0")
+    implementation("io.javalin:javalin-micrometer:6.7.0")
+    implementation("io.micrometer:micrometer-core:1.15.2")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.15.2")
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.2")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.2")
