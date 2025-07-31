@@ -52,6 +52,7 @@ def _jobwishes_to_file(dataframe: pd.DataFrame, chunk_index: int):
         formatted_lists["occupations"].append({"aktorid": aktorid, "occupations": occupations})
 
         conditions = _get_conditions(jobwishes=jobwishes)
+        logger.info(f"Feilsøking: Conditions keys: {list(conditions.keys())}")
         formatted_lists["conditions"].append({"aktorid": aktorid, **conditions})
 
     for category, alternatives in formatted_lists.items():  # loc, occup & conditions
