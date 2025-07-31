@@ -26,3 +26,8 @@ spec:
       role: roles/cloudsql.client
     buckets:
       - name: {{ bucket_name }}
+  observability:
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
