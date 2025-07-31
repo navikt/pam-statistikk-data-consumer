@@ -39,6 +39,7 @@ def _get_conditions(jobwishes: dict):
 
 
 def _jobwishes_to_file(dataframe: pd.DataFrame, chunk_index: int):
+    logger.info(f"Formatterer jobbønsker for skriving")
     formatted_lists = defaultdict(list)
     for _, row in dataframe.iterrows():  # pr person
         jobwishes = row["jobwishes"]
@@ -54,15 +55,22 @@ def _jobwishes_to_file(dataframe: pd.DataFrame, chunk_index: int):
         formatted_lists["conditions"].append({"aktorid": aktorid, **conditions})
 
     for category, alternatives in formatted_lists.items():  # loc, occup & conditions
-        frame = pd.DataFrame(alternatives)
-        if category == "conditions":
-            write_to_gcp("jobwishes/conditions", frame, chunk_index)
-        else:
-            _list_to_file(category, frame, "jobwishes", chunk_index)
+        try:
+            frame = pd.DataFrame(alternatives)
+            if category == "conditions":
+                write_to_gcp("jobwishes/conditions", frame, chunk_index)
+            else:
+                _list_to_file(category, frame, "jobwishes", chunk_index)
+        except Exception as e:
+            logger.error(f"ERROR in jobwishes_to_file for {category}: {e}")
+            continue
 
 
 def _list_to_file(name: str, dataframe: pd.DataFrame, directory: str, chunk_index: int):
     new_list = []
+
+    if (dataframe is None) or dataframe.empty:
+        logger.warning(f"Dataframe for {name} er None eller tomt. Hopper over.")
 
     try:
         for index, row in dataframe.iterrows():
