@@ -11,7 +11,9 @@ logger = get_logger(__name__)
 def _get_dummies(enums):
     dummies = {}
     for category, category_enums in enums.items():
+        logger.info(f"DEBUG: category_enums: {category_enums}")
         for enum_title, enum_value in category_enums.items():
+            logger.info(f"DEBUG: dummies-entry key -- {category}_{enum_title} --")
             dummies[f"{category}_{enum_title}"] = enum_value
     return dummies
 
